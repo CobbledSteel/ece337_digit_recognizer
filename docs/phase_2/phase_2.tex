@@ -208,11 +208,9 @@ This design is intended to accelerate the recognition of digits by implementing 
 \begin{tabular}[]{|c|l|}
     \hline
 Command Code & Description \\ \hline \hline
-\texttt{3'b000} & New image data is being input over MOSI \\ 
-\texttt{3'b001} & New expected label is being input over MOSI \\ 
-\texttt{3'b010} & Output the cost of the last operation \\ 
-\texttt{3'b011} & Output the result of the last operation \\
-\texttt{3'b100} & The weights/biases have changed, flush registers \\ \hline
+\texttt{2'b00} & New image data will be sent over MOSI \\ 
+\texttt{2'b01} & A new expected label will be sent over MOSI \\ 
+\texttt{2'b10} & The weights/biases have changed, flush registers \\ \hline
 \end{tabular}
     \caption{Device instruction bits for SPI}
     \label{tab:instruction}
