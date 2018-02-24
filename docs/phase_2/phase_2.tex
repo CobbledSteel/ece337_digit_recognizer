@@ -137,13 +137,13 @@ The following design proposal will include:
     \label{fig:top}
 \end{figure}
 
-This design is intended to accelerate the recognition of digits by implementing a neural network in an ASIC, allowing for parallel computation. However, the functionality can only be useful when interfaced with a general purpose computing device. The application depicted in the system usage diagram shows the recognizer interfacing with a microcontroller via SPI. An additional necessary module is flash memory. This is used to store the weights and biases for the neural network, and is used to prevent the need to reupload the model every time. If the model needs to be changed, then it can be uploaded directly to the flash memory using an external chip. The microcontroller in this example would be used as a control device. While the majority of the work being done is accomplished within the Neural Network Block, the control functionality comes from the user device performing the following tasks:
+This design is intended to accelerate the recognition of digits by implementing a neural network in an ASIC, allowing for parallel computation. However, the functionality can only be useful when interfaced with a general purpose computing device. The application depicted in the system usage diagram shows the recognizer interfacing with a microcontroller via SPI. An additional necessary module is flash memory, for which an SST39LF200A flash memory IC\cite{flash} is used. This is used to store the weights and biases for the neural network, and is used to prevent the need to reupload the model every time. If the model needs to be changed, then it can be uploaded directly to the flash memory using an external chip. The microcontroller in this example would be used as a control device. While the majority of the work being done is accomplished within the Neural Network Block, the control functionality comes from the user device performing the following tasks:
 
 
 
 \begin{enumerate}
     \item If necessary, reset the registers (everything but the Flash Memory)
-   2\item Using the SS, the SPI register will choose which operation to be done. The four operations are:
+    \item Using the SS, the SPI register will choose which operation to be done. The four operations are:
         \begin{enumerate}
             \item Let the digit recognizer know that image data will be sent over MOSI.
             \item Ask the digit recognizer for the result of the previous operation.
@@ -302,7 +302,7 @@ Where $x$ is the output of the neuron before going through the sigmoid function.
 
 \subsubsection{Cost Output Computations}
 
-If this device is to be used with an external module for training, the cost (or effectiveness) of the current model can be requested if the device is given an expected output for each digit passed to it. This cost function, $C$, is defined as
+If this device is to be used with an external module for training, the cost (or effectiveness) of the current model can be requested if the device is given an expected output for each digit passed to it. This cost function, $C$, is defined\cite{nielsenneural} as
 
 \begin{equation} \label{eq:cost}
 C(w,b) \equiv \frac{1}{2n}\sum_x |y(x) - a|^2
@@ -316,7 +316,7 @@ a = (c_0,c_1,c_2,c_3,c_4,c_5,c_6,c_7,c_8,c_9)
 
 Where $c_i$ is the level of confidence that a digit is $i$, encoded as an 8-bit binary fraction between 0 and 1.\\
 
-$y(x)$ is a function for the expected output of the outer later of the network, and represented as a 10-value vector as is $a$, except the correct digit has a value of 1, while an incorrect value is 0. $||u||$ is the magnitude of a vector $u$.
+$y(x)$ is a function for the expected output of the outer later of the network, and represented as a 10-value vector as is $a$, except the correct digit has a value of 1, while an incorrect value is 0. $|u|$ is the magnitude of a vector $u$.
 
 \subsubsection{Flash Memory Timing Requirements}
 
@@ -345,7 +345,8 @@ The main bottleneck of our design will come from the SRAM and the communication 
 \end{figure}
 The design architecture of the digit recognition circuit is shown in Figure~\ref{fig:detail}. All input first is fed to the SPI Input Controller where the data is filtered into one of a few different blocks. Each data destination block is determined by the input code. The input codes are laid out in Section~\ref{sec:standards}. For the standard operating mode (output), image data is fed into the input controller and sent to a staging register used specifically for holding the data of each image. The network controller uses this data as well as data from the weight/bias staging registers (loaded from flash memory) to be input into the Sigmoid ALU to calculate probabilities for each number, \textit{i.e.}~0-9. Depending on if the microcontroller asks for the cost analysis of the previous operation, the cost can also be output on the MISO line used for outputting the detected digit.
 
-
+\bibliographystyle{IEEEtran}
+\bibliography{references}
 
 
 
