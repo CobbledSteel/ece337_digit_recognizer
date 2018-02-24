@@ -16,6 +16,7 @@
 \usepackage{amsfonts}
 \usepackage{mathtools}
 \usepackage{multirow}
+\usepackage{nicefrac}
 \usepackage{sectsty}
 \usepackage{multicol}
 \usepackage{lastpage}
@@ -178,6 +179,7 @@ This design is intended to accelerate the recognition of digits by implementing 
 \begin{easylist}
 & ``Pre-Processing'', once values from a register are used, those values are updated with the next value to be utilized, if a calculation requires multiple cycles.
 & Allows the same arithmetic unit to be used for multiple calculations at once.
+& Staging is controlled by a network controller block, allowing for pipelining in the sigmoid ALU block.
 \end{easylist}
 
 
@@ -201,17 +203,17 @@ This design is intended to accelerate the recognition of digits by implementing 
 \begin{tabular}[]{|c|l|}
     \hline
 Command Code & Description \\ \hline \hline
-\texttt{1'b000} & New image data is being input over MOSI \\ 
-\texttt{1'b001} & New expected label is being input over MOSI \\ 
-\texttt{1'b010} & Output the cost of the last operation \\ 
-\texttt{1'b011} & Output the result of the last operation \\
-\texttt{1'b100} & The weights/biases have changed, flush registers \\ \hline
+\texttt{3'b000} & New image data is being input over MOSI \\ 
+\texttt{3'b001} & New expected label is being input over MOSI \\ 
+\texttt{3'b010} & Output the cost of the last operation \\ 
+\texttt{3'b011} & Output the result of the last operation \\
+\texttt{3'b100} & The weights/biases have changed, flush registers \\ \hline
 \end{tabular}
     \caption{Device instruction bits for SPI}
     \label{tab:instruction}
 \end{table}
 
-\subsection{Pinout}
+\subsection{Design Pinout}
 \begin{table}[H]
     \centering
     \begin{tabular}[]{|l|l|l|p{250pt}|}
@@ -236,7 +238,7 @@ Command Code & Description \\ \hline \hline
         \texttt{SCK} & in & 1 & SPI clock\\
         \texttt{SS} & out& 1 & Slave select Signal\\\hline
     \end{tabular}
-    \caption{User device pinouts}
+    \caption{Pinouts to the user device}
     \label{tab:user}
 \end{table}
 
@@ -251,11 +253,64 @@ Command Code & Description \\ \hline \hline
         \texttt{DATA} & in & 16 & Bias/weight data from the external flash memory\\
         \texttt{ADDR} & out & 16 & Address for flash memory\\\hline
     \end{tabular}
-    \caption{Flash memory pinouts}
+    \caption{Pinouts to the flash memory}
     \label{tab:flash}
 \end{table}
 
 The signals specified in Table~\ref{tab:misc} represent any signals necessary for the chip to be powered and clocked. These are not labeled in the design architecture. Next, the pins in Table~\ref{tab:user} are the signals that are exposed to any device that will use the neural network for detecting digits. Finally, the pins in Table~\ref{tab:flash} are the signals that are necessary for the neural network to interface with its flash memory.
+
+\subsection{Operational Characteristics}
+
+\subsubsection{Sigmoid Neuron Computations}
+
+This system’s ALU performs the necessary computations for a sigmoid neuron. This takes several different stages, in which the inputs to the neuron are multiplied by a weight, and then summed. This resulting value is compared to the bias for the neuron, and the difference is outputted into a sigmoid function.\\
+
+Before using the sigmoid function, the output of the neuron is be represented as\\
+
+\begin{equation}\label{pre-sigmoid}
+\sum_i w_ix_i  + b
+\end{equation}
+
+where $i$ is an index of an input to the sigmoid, and $w_i$ is a weight to an input, and $x_i$ is the pre-weighted value of the input. $b$ is the bias for a particular sigmoid neuron.\\
+
+The sigmoid function is defined as
+
+\begin{equation} \label{eq:sigmoid}
+\sigma(x) \equiv \frac{1}{1+e^{-x}}
+\end{equation}
+
+Where $x$ is the output of the neuron before going through the sigmoid function.
+
+\subsubsection{Cost Output Computations}
+
+If this device is to be used with an external module for training, the cost (or effectiveness) of the current model can be requested if the device is given an expected output for each digit passed to it. This cost function, $C$, is defined as
+
+\begin{equation} \label{eq:cost}
+C(w,b) \equiv \frac{1}{2n}\sum_x |y(x) - a|^2
+\end{equation}
+
+In this definition, $w$ represents the current weights used for the network, and $b$ represents the biases. $x$ represents a single detected digit for an image, so this cost is calculated over multiple tests. $n$ represents the total number of training inputs run. $a$ is a vector of outputs from the outer layer of the neural network, notated as
+
+\begin{equation}\label{eq:output-vector}
+a = (c_0,c_1,c_2,c_3,c_4,c_5,c_6,c_7,c_8,c_9)
+\end{equation}
+
+Where $c_i$ is the level of confidence that a digit is $i$, encoded as an 8-bit binary fraction between 0 and 1.\\
+
+$y(x)$ is a function for the expected output of the outer later of the network, and represented as a 10-value vector as is $a$, except the correct digit has a value of 1, while an incorrect value is 0. $||u||$ is the magnitude of a vector $u$.
+
+
+\subsection{Requirements}
+
+The digit recognizer in its current state was almost exclusively optimized for speed by allowing for parallel computation and multiplication of the image data by each respective weight and bias. Other design choices were made when creating the initial layout of the digit recognizer, of which most applied to the speed of the circuit. For one, all expensive operations, i.e the sigmoid function, will be executed by table lookup and linear interpolation rather than an ALU that would perform this operation sequentially. While this would require more space on the chip to store the data necessary to perform table lookup, it will reduce the amount of bottlenecks in the computational logic of the digit recognizer. Another method for the reduction of bottlenecks and the reduction of area used is within the actual image data being sent. SPI will be used not only for its simplicity but so that the image data can be clocked in at a higher rate (12 MHz). The image data itself will consist of $14 \times 14$ pixel grayscale images with each pixel being represented by a byte. Standard MNIST images are originally $28 \times 28$ pixel, however, in an attempt to optimize space and reduce the number of flip flops in the design the number of pixels was reduced to just \nicefrac{1}{4} of the original MNIST standard images. This will require more overhead in order to train the circuit, however, will speed up the digit recognizer and require less space. The main bottleneck of our circuit will be sending in data via SPI to the SPI controller. While the intention is to use a 12 MHz clock which will allow us to have a baud rate of 12 Mb/s, or in our design:
+
+\[ \frac{ 12\cdot 10^6\cdot \textrm{bits/second}} {14\cdot 14\cdot 8\ \textrm{bits/image}} = 7653\  \frac{\textrm{images}}{\textrm{second}} \]
+
+The main bottleneck of our design will come from the SRAM and the communication between the SRAM and the Staging Registers used in loading the weights and biases that will be utilized to calculate the sigmoid output and ultimately the result of which handwritten digit was sent in to the circuit. The read cycle time, $\textrm{T}_\textrm{RC}$, of the SRAM is 55 ns which is for each 16-bit word accessed.
+
+
+
+
 
 \newpage
 \section{Design Architecture}
