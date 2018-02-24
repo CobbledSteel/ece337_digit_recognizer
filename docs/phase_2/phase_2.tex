@@ -143,7 +143,7 @@ This design is intended to accelerate the recognition of digits by implementing 
 
 \begin{enumerate}
     \item If necessary, reset the registers (everything but the Flash Memory)
-    \item Using the SS, the SPI register will choose which operation to be done. The four operations are:
+   2\item Using the SS, the SPI register will choose which operation to be done. The four operations are:
         \begin{enumerate}
             \item Let the digit recognizer know that image data will be sent over MOSI.
             \item Ask the digit recognizer for the result of the previous operation.
@@ -263,7 +263,26 @@ The signals specified in Table~\ref{tab:misc} represent any signals necessary fo
 
 \subsubsection{Sigmoid Neuron Computations}
 
-This system’s ALU performs the necessary computations for a sigmoid neuron. This takes several different stages, in which the inputs to the neuron are multiplied by a weight, and then summed. This resulting value is compared to the bias for the neuron, and the difference is outputted into a sigmoid function.\\
+This system’s ALU performs the necessary computations for a sigmoid neuron, visually depicted below in Figure~\ref{fig:sigfig}. This takes several different stages, in which the inputs to the neuron are multiplied by a weight, and then summed. This resulting value is compared to the bias for the neuron, and the difference is outputted into a sigmoid function.\\
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \tikzset{myptr/.style={decoration={markings,mark=at position 1 with %
+    {\arrow[scale=2,>=stealth]{>}}},postaction={decorate}}}
+        \node (S) at (0,0)  [draw,circle] {sigmoid};
+        \draw (S);
+        \draw [myptr] (-3,1) node[left]{$x_0$} -- (S)node[pos=0.5,above]{$w_0$} ;
+        \draw [myptr] (-3,0) node[left]{$x_i$} -- (S)node[pos=0.5,above]{$w_i$} ;
+        \draw [myptr] (-3,-1) node[left]{$x_k$} -- (S)node[pos=0.5,above]{$w_k$} ;
+        \draw (-3.35,0.6) node{\vdots};
+        \draw (-3.35,-0.4) node{\vdots};
+        \draw [myptr] (S) -- (2,0) node[right]{sigmoid output};
+    \end{tikzpicture}
+    \caption{A top-level represention of a sigmoid neuron with $k$ inputs}
+    \label{fig:sigfig}
+\end{figure}
 
 Before using the sigmoid function, the output of the neuron is be represented as\\
 

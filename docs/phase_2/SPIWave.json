@@ -1,0 +1,22 @@
+{signal: [
+  ['Flush Registers',
+  {name: 'SCK', wave: '0P.......0..'},
+  {name: 'MISO', wave: '............'},
+  {name: 'MOSI', wave: '0......10...'},
+   {name: 'SS', wave: '0........1..'}
+  ],
+    ['Write Image',
+  {name: 'SCK', wave: '0P................|.........0'},
+     {name: 'MISO', wave: '.................0|.010.101..', node: '....................A......B'},
+     {name: 'MOSI', wave: '0.........10.10...|.XXXXXXXXX', node:'.C......IJ......K'},
+   {name: 'SS', wave: '0.................|.........1'},
+  ] ,
+   ['Write Label',
+  {name: 'SCK', wave: '0P...............0|.P.......0'},
+     {name: 'MISO', wave: '.................0|.0.1..0...', node: '....................Z......X'},
+     {name: 'MOSI', wave: '0.....10..0.1.0...|.XXXXXXXXX', node:'.D......FG......H'},
+   {name: 'SS', wave: '0................1|0........1'},
+  ] 
+  ],
+  edge: ['C<->I COMMAND CODE', 'J<->K FIRST IMAGE BYTE', 'A<->B RESULT', 'D<->F COMMAND CODE', 'G<->H EXPECTED LABEL', 'Z<->X COST']
+ }
