@@ -113,7 +113,7 @@ Wednesday | 11:30}
 
 
     \begin{itemize}
-        \item SST39LF200A ($\times$16) Multi Purpose Flash Datasheet
+        \item SST39LF200A ($\times$16) Multi Purpose Flash Datasheet\cite{flash}
         \item Reference Standard Cell Simulation Library for Mapped Design Verification
         \item Reference Standard Cell Technology Library for Final Design Layout Verification
         \item Verilog HDL Simulation and Design Synthesis Tool Chain
@@ -396,6 +396,7 @@ The main bottleneck of our design will come from the SRAM and the communication 
 \end{figure}
 The design architecture of the digit recognition circuit is shown in Figure~\ref{fig:detail}. All input first is fed to the SPI Input Controller where the data is filtered into one of a few different blocks. Each data destination block is determined by the input code. The input codes are laid out in Section~\ref{sec:standards}. For the standard operating mode (output), image data is fed into the input controller and sent to a staging register used specifically for holding the data of each image. The network controller uses this data as well as data from the weight/bias staging registers (loaded from flash memory) to be input into the Sigmoid ALU to calculate probabilities for each number, \textit{i.e.}~0-9. Depending on if the microcontroller asks for the cost analysis of the previous operation, the cost can also be output on the MISO line used for outputting the detected digit.
 
+\renewcommand\refname{References Cited}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 
