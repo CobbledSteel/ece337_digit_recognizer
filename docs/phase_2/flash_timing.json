@@ -1,0 +1,29 @@
+{ signal: [   
+  
+  {node: '....a............b.....c'},    
+  {name: 'Address', wave:  'xxxx2............2............xxxx'}, 
+  
+  {                                             },
+  {name: 'ChipEnable', wave:  '1....0.....................1......', 
+   node: '.....d......e..............t'}, 
+  
+  {},  
+  {name: 'OutputEnable', wave:  '1.....0.....................1.....', 
+   node:'......f.....g...............x'}, 
+  
+  {node: '............................y..z'},
+  {name: 'WriteEnable', wave:  'xxx1..............................',
+   node:'......j..k...................'}, 
+  
+  {node:'.....h...i.......q..r......u...v'},
+  {name: 'Data', wave:  'zzzzzzzzzxxx2.......xxx2.......zzz', 
+   node:'.........m..n.......p..s.......w', 
+   data:["Valid Data","Valid Data"]}, 
+          
+],
+	edge: ['a<->b T_rc', 'b<->c T_aa', 'd<->e T_ce', 'e-g', 'f<->g T_oe', 'd|-h', 
+  			'h<->i T_clz', 'f-j', 'k-i', 'i-m', 'j<->k T_olz', 'g-n','b-q',
+  			'q<->r T_oh','r-p','c-s','t-u','v-w','u<->v T_chz','x-y','z-v',
+			'y<->z T_ohz'],
+ config: {skin: 'narrow'}
+}
