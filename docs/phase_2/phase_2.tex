@@ -19,11 +19,15 @@
 \usepackage{nicefrac}
 \usepackage{sectsty}
 \usepackage{multicol}
+\usepackage{placeins}
 \usepackage{lastpage}
 \usepackage[font={small,it}]{caption}
 \usepackage{array}
 \usepackage{url}
 \usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{rotating}
 
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -345,11 +349,28 @@ $y(x)$ is a function for the expected output of the outer later of the network, 
 The operation of the flash memory is controlled by Chip Enable (CE) and Output Enable (OE), both have to be low for the system to obtain data from the outputs. CE is used for device selection. When CE is high, the chip is deselected and only standby power is consumed. OE is the output control and is used to gate data from the output pins. The data bus is in high impedance state when either CE or OE is high.Each read cycle gives a 16-bit data which could either be two 8-bit weights or two 8-bit  bias values.
 \newpage
 \subsubsection{SPI Timing Requirements}
-\begin{figure}[H]
+\begin{sidewaysfigure}
   \centering
-  \includegraphics[width=0.89\textheight, angle=90]{SPIWave.pdf}
-  \caption{SPI Timing Diagram}
-\end{figure}
+  \begin{subfigure}[h]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{FlushRegistersWave.pdf}
+    \caption{Flush Registers Timing Diagram}
+    \vspace{2cm}
+  \end{subfigure}
+
+  \begin{subfigure}[h]{\textwidth}
+    \includegraphics[width=\textwidth]{WriteImageWave.pdf}
+    \caption{Timing Diagram for Writing Image}
+    \vspace{2cm}
+  \end{subfigure}
+
+  \begin{subfigure}[h]{\textwidth}
+    \includegraphics[width=\textwidth]{WriteLabelWave.pdf}
+    \caption{Timing Diagram for Writing Label}
+    \vspace{1cm}
+  \end{subfigure}
+  \caption{SPI Timing Diagrams}
+\end{sidewaysfigure}
+\FloatBarrier
 
 \newpage
 \subsection{Requirements}
