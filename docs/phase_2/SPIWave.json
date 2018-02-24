@@ -1,22 +1,23 @@
 {signal: [
   ['Flush Registers',
-  {name: 'SCK', wave: '0P.......0..'},
-  {name: 'MISO', wave: '............'},
-  {name: 'MOSI', wave: '0......10...'},
-   {name: 'SS', wave: '0........1..'}
+  {name: 'SCK', wave: '0.P.......0..'},
+  {name: 'MISO', wave: 'z............'},
+  {name: 'MOSI', wave: 'z0......1.z..'},
+   {name: 'SS', wave: '10........1..'}
   ],
     ['Write Image',
-  {name: 'SCK', wave: '0P................|.........0'},
-     {name: 'MISO', wave: '.................0|.010.101..', node: '....................A......B'},
-     {name: 'MOSI', wave: '0.........10.10...|.XXXXXXXXX', node:'.C......IJ......K'},
-   {name: 'SS', wave: '0.................|.........1'},
+     {name: 'SCK',  wave: '0.P..................|.........0|.P.......0', period: 1},
+     {name: 'MISO', wave: 'z....................|..........|2.......z.', node: '......................A......B', data: "RESULT"},
+     {name: 'MOSI', wave: 'z0.......2.......2...|2.......z.|..........', node:'..C......IJ......K', data: ['FIRST IMAGE BYTE', '', 'LAST IMAGE BYTE']},
+   {name: 'SS',     wave: '10...................|.........1|0........1'},
   ] ,
    ['Write Label',
-  {name: 'SCK', wave: '0P...............0|.P.......0'},
-     {name: 'MISO', wave: '.................0|.0.1..0...', node: '....................Z......X'},
-     {name: 'MOSI', wave: '0.....10..0.1.0...|.XXXXXXXXX', node:'.D......FG......H'},
-   {name: 'SS', wave: '0................1|0........1'},
+  {name: 'SCK',     wave: '0.P...............0|..P.......0.'},
+    {name: 'MISO', wave: 'z..................|.2.......z..', node: '....................Z......X', data: 'COST'},
+    {name: 'MOSI', wave: 'z0.....102.......z.|............', node:'..D......FG......H', data: ['EXPECTED LABEL']},
+   {name: 'SS',     wave: 'z0................1|0.........1.'},
   ] 
   ],
-  edge: ['C<->I COMMAND CODE', 'J<->K FIRST IMAGE BYTE', 'A<->B RESULT', 'D<->F COMMAND CODE', 'G<->H EXPECTED LABEL', 'Z<->X COST']
+  edge: ['C<->I COMMAND CODE', 'D<->F COMMAND CODE'],
+  config: { skin: 'narrow' }
  }
