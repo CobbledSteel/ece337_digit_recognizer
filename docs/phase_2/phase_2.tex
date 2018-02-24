@@ -28,6 +28,7 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{rotating}
+\usepackage{rotfloat}
 
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -350,28 +351,39 @@ The following timing parameters are obtained from the datasheet of the SST39LF20
 The operation of the flash memory is controlled by Chip Enable (CE) and Output Enable (OE), both have to be low for the system to obtain data from the outputs. CE is used for device selection. When CE is high, the chip is deselected and only standby power is consumed. OE is the output control and is used to gate data from the output pins. The data bus is in high impedance state when either CE or OE is high. Each read cycle gives a 16-bit data word which contains two weight/bias bytes.
 \newpage
 \subsubsection{SPI Timing Requirements}
-\begin{sidewaysfigure}
+\vspace{-0.6cm}
+\begin{sidewaysfigure}[H]
   \centering
-  \begin{subfigure}[h]{0.5\textwidth}
-    \includegraphics[width=\textwidth]{FlushRegistersWave.pdf}
+  \begin{subfigure}[h]{\textwidth}
+    \centering
+    \includegraphics[height=2.8cm]{FlushRegistersWave.pdf}
     \caption{Flush Registers Timing Diagram}
-    \vspace{2cm}
+    \vspace{1.5cm}
   \end{subfigure}
 
   \begin{subfigure}[h]{\textwidth}
-    \includegraphics[width=\textwidth]{WriteImageWave.pdf}
+    \centering
+    \includegraphics[height=2.8cm]{WriteImageWave.pdf}
     \caption{Timing Diagram for Writing Image}
-    \vspace{2cm}
+    \vspace{1.5cm}
   \end{subfigure}
 
   \begin{subfigure}[h]{\textwidth}
-    \includegraphics[width=\textwidth]{WriteLabelWave.pdf}
+    \centering
+    \includegraphics[height=2.8cm]{WriteLabelWave.pdf}
     \caption{Timing Diagram for Writing Label}
-    \vspace{1cm}
+    \vspace{0.6cm}
   \end{subfigure}
   \caption{SPI Timing Diagrams}
 \end{sidewaysfigure}
 \FloatBarrier
+
+\newpage
+Flushing the registers is not necessarily something that will be used that often, but is necessary to include in the design. Flushing the registers is necessary to do when the weights or biases have been overwritten in the flash memory by the controller that is communicating with the digit recognition circuit. To flush the registers, a command code of \texttt{2'b10} has to be transmitted over SPI as the first byte of a packet. Since data in the system is transmitted LSB first, the last two bits are the only pieces of information that matter within the first byte. All data from the controller using the digit recognition system must be written to the MOSI line, the SS should be low on the device, and the SCK should only run for 8 cycles to ensure that only 8 bits of information have been sent. The MISO line is not used in this scenario. \\
+
+To write an image for an operation to be performed on into the circuit, first the command code \texttt{2'b00} must be written through the SPI MOSI. immediately after the command code the first byte of the image is written, followed by the second, followed by the third etc. until all 196 bytes have been written. Then the user must wait a defined amount of time before the result byte can be read out from the SPI MISO. the SS is low whenever the SCK is running. \\
+
+To write an expected label for the current image on into the circuit, first the command code \texttt{2'b01} must be written through the SPI MOSI. immediately after the command code the label value in binary is input. Then the user must wait a defined amount of time before the cost byte can be read out from the SPI MISO. the SS is low whenever the SCK is running.\\
 
 \newpage
 \subsection{Requirements}
