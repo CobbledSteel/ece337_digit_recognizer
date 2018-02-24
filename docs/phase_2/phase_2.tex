@@ -300,7 +300,31 @@ Where $c_i$ is the level of confidence that a digit is $i$, encoded as an 8-bit 
 $y(x)$ is a function for the expected output of the outer later of the network, and represented as a 10-value vector as is $a$, except the correct digit has a value of 1, while an incorrect value is 0. $||u||$ is the magnitude of a vector $u$.
 
 \subsubsection{Flash Memory Timing Requirements}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{flash_timing.pdf}
+  \caption{Flash Memory Timing Diagram}
+\end{figure}
 
+\begin{figure}[H]
+  \centering
+  \begin{tabular}[H]{|l|l|c|c|c|}
+    \hline
+    Symbol & Parameter & Min & Max & Units \\ \hline \hline
+    T$_{RC}$ & Read Cycle Time & 55 & & ns \\\hline
+    T$_{CE}$ & Chip Enable (CE) Access Time & & 55 & ns \\ \hline
+    T$_{AA}$ & Address Access Time & & 55 & ns \\ \hline
+    T$_{OE}$ & Output Enable (OE) Access Time & & 30 & ns \\ \hline
+    T$_{CLZ}$ & CE Low to Active Output & 0  & & ns \\ \hline
+    T$_{OLZ}$ & OE Low to Active Output & 0 & & ns \\ \hline
+    T$_{CHZ}$ & CE High to High-Z Output & & 15 & ns \\ \hline
+    T$_{OHZ}$ & OE High to High-Z Output & & 15 & ns \\ \hline
+    T$_{OH}$ & Output Hold from Address Change & 0 & & ns \\ \hline
+  \end{tabular}
+  \caption{Flash Memory Timing Parameters}
+\end{figure}
+The operation of the flash memory is controlled by Chip Enable (CE) and Output Enable (OE), both have to be low for the system to obtain data from the outputs. CE is used for device selection. When CE is high, the chip is deselected and only standby power is consumed. OE is the output control and is used to gate data from the output pins. The data bus is in high impedance state when either CE or OE is high.Each read cycle gives a 16-bit data which could either be two 8-bit weights or two 8-bit  bias values.
+\newpage
 \subsubsection{SPI Timing Requirements}
 
 
