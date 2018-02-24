@@ -33,7 +33,7 @@
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \pagestyle{fancy}
-\lhead{ECE337 Project Phase 1 Report}
+\lhead{ECE337 Project Phase 2 Report}
 
 \cfoot{Page {\thepage} of \pageref{LastPage}}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -69,7 +69,7 @@
 \rule{\textwidth}{1.6pt}\vspace*{-\baselineskip}\vspace*{2pt} % Thick horizontal line
 \rule{\textwidth}{0.4pt}\\[\baselineskip] % Thin horizontal line
 {\bf \fontsize{17.5pt}{12pt}\selectfont {Handwritten Digit Recognizer using Neural Networks}}\\[0.5\baselineskip] % Title
-{\large Phase 1 Project Proposal\\
+{\large Phase 2 Project Proposal\\
     TA: Anirudh\\[4pt]
 Wednesday | 11:30}
 
@@ -88,7 +88,7 @@ Wednesday | 11:30}
 \\[3\baselineskip]
 {\large\sc ECE 33700} % Editor list
 \\[0.5\baselineskip]
-{\large\sc 2/12/2018} % Editor list
+{\large\sc 2/24/2018} % Editor list
 \\\vspace{15\baselineskip}
 {\itshape Purdue University\\ Computer Engineering\par} % Editor affiliation
 
@@ -107,7 +107,7 @@ Wednesday | 11:30}
     \pagestyle{fancy}
 
     \section{Executive Summary}
-    This project idea is a digit recognizer. It is designed to work with images consistent with the MNIST dataset, so it accepts 14$\times$14 px grayscale images, and outputs a detected digit. It accepts an image, and a list of weights and biases for the network connections. While it doesn't have an internal method for training, it outputs a cost function for each set of images, allowing for it to be connected to an external training module. Furthermore, using SPI, the network model can be reprogrammed on the fly. Digit recognition is a very useful application, as it allows for devices to interpret data ranging from checks to signs to handwritten notes. Machine learning allows for very high accuracy for digit detection, and when applied to digit recognition can handle a wide range of fonts and handwriting styles. However, due to the structure of neural networks, sequential computation such as what is found in microcontrollers is not effective for a neural network. Instead, devices such as GPUs are often used due to their capacity for parallel computation. This device uses an architecture specialized just for multiplying weights and adding inputs, allowing for much faster computation for digit recognition. While on a microcontroller this system would require tens of thousands of sequential multiplications, on an ASIC it will be possible to run calculations in parallel, and implement pipelining for addition and multiplication. This is done by taking advantage of the MapReduce procedure, where in this case the mapping is applying weights to the biases, and the reduction is adding together all the inputs to a sigmoid, and then calculating the sigmoid output (which can be done by a lookup table.) Finally, this device allows for training to be done on separate hardware, which typically requires far more computational power than detection, and then allows the trained model to be uploaded on the fly using a standard interface (In this case, SPI) allowing for flexible operation.\\
+    This project idea is a digit recognizer. It is designed to work with images consistent with the MNIST dataset\cite{MNIST}, so it accepts 14$\times$14 px grayscale images, and outputs a detected digit. It accepts an image, and a list of weights and biases for the network connections. While it doesn't have an internal method for training, it outputs a cost function for each set of images, allowing for it to be connected to an external training module. Furthermore, using SPI, the network model can be reprogrammed on the fly. Digit recognition is a very useful application, as it allows for devices to interpret data ranging from checks to signs to handwritten notes. Machine learning allows for very high accuracy for digit detection, and when applied to digit recognition can handle a wide range of fonts and handwriting styles. However, due to the structure of neural networks, sequential computation such as what is found in microcontrollers is not effective for a neural network. Instead, devices such as GPUs are often used due to their capacity for parallel computation. This device uses an architecture specialized just for multiplying weights and adding inputs, allowing for much faster computation for digit recognition. While on a microcontroller this system would require tens of thousands of sequential multiplications, on an ASIC it will be possible to run calculations in parallel, and implement pipelining for addition and multiplication. This is done by taking advantage of the MapReduce procedure, where in this case the mapping is applying weights to the biases, and the reduction is adding together all the inputs to a sigmoid, and then calculating the sigmoid output (which can be done by a lookup table.) Finally, this device allows for training to be done on separate hardware, which typically requires far more computational power than detection, and then allows the trained model to be uploaded on the fly using a standard interface (In this case, SPI) allowing for flexible operation.\\
 
     To complete this design of a digit recognizer, the following will be needed:
 
@@ -141,13 +141,13 @@ The following design proposal will include:
     \label{fig:top}
 \end{figure}
 
-This design is intended to accelerate the recognition of digits by implementing a neural network in an ASIC, allowing for parallel computation. However, the functionality can only be useful when interfaced with a general purpose computing device. The application depicted in the system usage diagram shows the recognizer interfacing with a microcontroller via SPI. An additional necessary module is flash memory. This is used to store the weights and biases for the neural network, and is used to prevent the need to reupload the model every time. If the model needs to be changed, then it can be uploaded directly to the flash memory using an external chip. The microcontroller in this example would be used as a control device. While the majority of the work being done is accomplished within the Neural Network Block, the control functionality comes from the user device performing the following tasks:
+This design is intended to accelerate the recognition of digits by implementing a neural network in an ASIC, allowing for parallel computation. However, the functionality can only be useful when interfaced with a general purpose computing device. The application depicted in the system usage diagram shows the recognizer interfacing with a microcontroller via SPI. An additional necessary module is flash memory, for which an SST39LF200A flash memory IC\cite{flash} is used. This is used to store the weights and biases for the neural network, and is used to prevent the need to reupload the model every time. If the model needs to be changed, then it can be uploaded directly to the flash memory using an external chip. The microcontroller in this example would be used as a control device. While the majority of the work being done is accomplished within the Neural Network Block, the control functionality comes from the user device performing the following tasks:
 
 
 
 \begin{enumerate}
     \item If necessary, reset the registers (everything but the Flash Memory)
-   2\item Using the SS, the SPI register will choose which operation to be done. The four operations are:
+    \item Using the SS, the SPI register will choose which operation to be done. The four operations are:
         \begin{enumerate}
             \item Let the digit recognizer know that image data will be sent over MOSI.
             \item Ask the digit recognizer for the result of the previous operation.
@@ -306,7 +306,7 @@ Where $x$ is the output of the neuron before going through the sigmoid function.
 
 \subsubsection{Cost Output Computations}
 
-If this device is to be used with an external module for training, the cost (or effectiveness) of the current model can be requested if the device is given an expected output for each digit passed to it. This cost function, $C$, is defined as
+If this device is to be used with an external module for training, the cost (or effectiveness) of the current model can be requested if the device is given an expected output for each digit passed to it. This cost function, $C$, is defined\cite{nielsenneural} as
 
 \begin{equation} \label{eq:cost}
 C(w,b) \equiv \frac{1}{2n}\sum_x |y(x) - a|^2
@@ -320,9 +320,10 @@ a = (c_0,c_1,c_2,c_3,c_4,c_5,c_6,c_7,c_8,c_9)
 
 Where $c_i$ is the level of confidence that a digit is $i$, encoded as an 8-bit binary fraction between 0 and 1.\\
 
-$y(x)$ is a function for the expected output of the outer later of the network, and represented as a 10-value vector as is $a$, except the correct digit has a value of 1, while an incorrect value is 0. $||u||$ is the magnitude of a vector $u$.
+$y(x)$ is a function for the expected output of the outer later of the network, and represented as a 10-value vector as is $a$, except the correct digit has a value of 1, while an incorrect value is 0. $|u|$ is the magnitude of a vector $u$.
 
 \subsubsection{Flash Memory Timing Requirements}
+The following timing parameters are obtained from the datasheet of the SST39LF200A flash memory IC.\cite{flash}
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{flash_timing.pdf}
@@ -346,7 +347,7 @@ $y(x)$ is a function for the expected output of the outer later of the network, 
   \end{tabular}
   \caption{Flash Memory Timing Parameters}
 \end{figure}
-The operation of the flash memory is controlled by Chip Enable (CE) and Output Enable (OE), both have to be low for the system to obtain data from the outputs. CE is used for device selection. When CE is high, the chip is deselected and only standby power is consumed. OE is the output control and is used to gate data from the output pins. The data bus is in high impedance state when either CE or OE is high.Each read cycle gives a 16-bit data which could either be two 8-bit weights or two 8-bit  bias values.
+The operation of the flash memory is controlled by Chip Enable (CE) and Output Enable (OE), both have to be low for the system to obtain data from the outputs. CE is used for device selection. When CE is high, the chip is deselected and only standby power is consumed. OE is the output control and is used to gate data from the output pins. The data bus is in high impedance state when either CE or OE is high. Each read cycle gives a 16-bit data word which contains two weight/bias bytes.
 \newpage
 \subsubsection{SPI Timing Requirements}
 \begin{sidewaysfigure}
@@ -395,7 +396,8 @@ The main bottleneck of our design will come from the SRAM and the communication 
 \end{figure}
 The design architecture of the digit recognition circuit is shown in Figure~\ref{fig:detail}. All input first is fed to the SPI Input Controller where the data is filtered into one of a few different blocks. Each data destination block is determined by the input code. The input codes are laid out in Section~\ref{sec:standards}. For the standard operating mode (output), image data is fed into the input controller and sent to a staging register used specifically for holding the data of each image. The network controller uses this data as well as data from the weight/bias staging registers (loaded from flash memory) to be input into the Sigmoid ALU to calculate probabilities for each number, \textit{i.e.}~0-9. Depending on if the microcontroller asks for the cost analysis of the previous operation, the cost can also be output on the MISO line used for outputting the detected digit.
 
-
+\bibliographystyle{IEEEtran}
+\bibliography{references}
 
 
 
