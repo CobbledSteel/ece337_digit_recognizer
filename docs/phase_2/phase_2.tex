@@ -19,11 +19,15 @@
 \usepackage{nicefrac}
 \usepackage{sectsty}
 \usepackage{multicol}
+\usepackage{placeins}
 \usepackage{lastpage}
 \usepackage[font={small,it}]{caption}
 \usepackage{array}
 \usepackage{url}
 \usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{rotating}
 
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -346,8 +350,30 @@ The following timing parameters are obtained from the datasheet of the SST39LF20
 The operation of the flash memory is controlled by Chip Enable (CE) and Output Enable (OE), both have to be low for the system to obtain data from the outputs. CE is used for device selection. When CE is high, the chip is deselected and only standby power is consumed. OE is the output control and is used to gate data from the output pins. The data bus is in high impedance state when either CE or OE is high. Each read cycle gives a 16-bit data word which contains two weight/bias bytes.
 \newpage
 \subsubsection{SPI Timing Requirements}
+\begin{sidewaysfigure}
+  \centering
+  \begin{subfigure}[h]{0.5\textwidth}
+    \includegraphics[width=\textwidth]{FlushRegistersWave.pdf}
+    \caption{Flush Registers Timing Diagram}
+    \vspace{2cm}
+  \end{subfigure}
 
+  \begin{subfigure}[h]{\textwidth}
+    \includegraphics[width=\textwidth]{WriteImageWave.pdf}
+    \caption{Timing Diagram for Writing Image}
+    \vspace{2cm}
+  \end{subfigure}
 
+  \begin{subfigure}[h]{\textwidth}
+    \includegraphics[width=\textwidth]{WriteLabelWave.pdf}
+    \caption{Timing Diagram for Writing Label}
+    \vspace{1cm}
+  \end{subfigure}
+  \caption{SPI Timing Diagrams}
+\end{sidewaysfigure}
+\FloatBarrier
+
+\newpage
 \subsection{Requirements}
 
 The digit recognizer in its current state was almost exclusively optimized for speed by allowing for parallel computation and multiplication of the image data by each respective weight and bias. Other design choices were made when creating the initial layout of the digit recognizer, of which most applied to the speed of the circuit. For one, all expensive operations, i.e the sigmoid function, will be executed by table lookup and linear interpolation rather than an ALU that would perform this operation sequentially. While this would require more space on the chip to store the data necessary to perform table lookup, it will reduce the amount of bottlenecks in the computational logic of the digit recognizer. Another method for the reduction of bottlenecks and the reduction of area used is within the actual image data being sent. SPI will be used not only for its simplicity but so that the image data can be clocked in at a higher rate (12 MHz). The image data itself will consist of $14 \times 14$ pixel grayscale images with each pixel being represented by a byte. Standard MNIST images are originally $28 \times 28$ pixel, however, in an attempt to optimize space and reduce the number of flip flops in the design the number of pixels was reduced to just \nicefrac{1}{4} of the original MNIST standard images. This will require more overhead in order to train the circuit, however, will speed up the digit recognizer and require less space. The main bottleneck of our circuit will be sending in data via SPI to the SPI controller. While the intention is to use a 12 MHz clock which will allow us to have a baud rate of 12 Mb/s, or in our design:
