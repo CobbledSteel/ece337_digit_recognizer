@@ -1,0 +1,12 @@
+{signal: [
+  
+    ['synchronizer',
+     {name: 'clk',       wave: 'P.........', period: 3},
+     {name: 'async_in',   wave: 'x.0....1.0....1.....0.........'},
+     {name: 'sync_out', wave: '0...........1..0.....1.......0'},
+     {name: 'n_rst',     wave: '10..1.........................'},
+  ] ,
+
+  ],
+  config: { skin: 'narrow' }
+ }
