@@ -38,15 +38,41 @@ def ramp_prime_basic(z,scale):
         return 1/(2*scale)
 
 if __name__=="__main__":
-    size = 10
-    sc = 1
+    # single side dimension of the image
+    size = 14
     pixels = size**2
-    training_data, validation_data, test_data = mnist_loader.load_data_wrapper(size)
+
+    # number of hidden sigmoid 
+    hidden_neurons = 10
+
+    # scaling factor for the output function
+    scale =  1
+
+    # precision of fractional component of values (in number of binary bits)
+    sigmoid_binary_bits = 4
+    weight_binary_bits = 0
+    bias_binary_bits = 0
+    pixel_binary_bits = 0
+
+    # generate scaled training data
+    training_data, validation_data, test_data = mnist_loader.load_data_wrapper(size, trunc=pixel_binary_bits)
     print "loaded data"
-    net = network.Network([pixels, 6, 10],partial(func,scale=sc),partial(func_prime,scale=sc))
+
+    # create network with given parameters
+    net = network.Network([pixels, hidden_neurons, 10],partial(func,scale=scale),partial(func_prime,scale=scale), 
+                          sigmoid_binary_bits, weight_binary_bits, bias_binary_bits)
     print "set up network"
-    net.SGD(training_data, 3, 10, 3.0, test_data=test_data)
+
+    # train the network
+    print "training the network..." 
+    net.SGD(training_data, 5, 10, 3.0, test_data=test_data)
     print "done"
-    net.print_network()
+
+    # print weights and biases (before truncation)
+    # net.print_network()
+
+    # evaluate the network with added truncations
     net.final_test(test_data)
 
+    # print weights and biases (after truncation)
+    # net.print_network()

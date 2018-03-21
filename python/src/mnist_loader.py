@@ -45,7 +45,7 @@ def load_data():
     f.close()
     return (training_data, validation_data, test_data)
 
-def load_data_wrapper(size=28):
+def load_data_wrapper(size=28,trunc=8):
     """Return a tuple containing ``(training_data, validation_data,
     test_data)``. Based on ``load_data``, but the format is more
     convenient for use in our implementation of neural networks.
@@ -67,15 +67,20 @@ def load_data_wrapper(size=28):
     turn out to be the most convenient for use in our neural network
     code."""
     pixels = size**2
+    pix_scale = 2**trunc
 
     tr_d, va_d, te_d = load_data()
-    training_inputs = [np.reshape(cv2.resize(np.reshape(x,(28,28)),(size,size)), (pixels, 1)) for x in tr_d[0]]
+    training_inputs = [np.round(np.reshape(cv2.resize(np.reshape(x,(28,28)),(size,size)), (pixels, 1)) * pix_scale) / pix_scale for x in tr_d[0]] 
     training_results = [vectorized_result(y) for y in tr_d[1]]
     training_data = zip(training_inputs, training_results)
-    validation_inputs = [np.reshape(cv2.resize(np.reshape(x,(28,28)),(size,size)), (pixels, 1)) for x in va_d[0]]
+    validation_inputs = [np.round(np.reshape(cv2.resize(np.reshape(x,(28,28)),(size,size)), (pixels, 1)) * pix_scale)for x in va_d[0]] 
     validation_data = zip(validation_inputs, va_d[1])
-    test_inputs = [np.reshape(cv2.resize(np.reshape(x,(28,28)),(size,size)), (pixels, 1)) for x in te_d[0]]
+    test_inputs = [np.round(np.reshape(cv2.resize(np.reshape(x,(28,28)),(size,size)), (pixels, 1)) * pix_scale) for x in te_d[0]] 
     test_data = zip(test_inputs, te_d[1])
+    #cv2.imshow("test", np.reshape(training_inputs[1],(size,size)))
+    #cv2.waitKey(0)
+
+
     return (training_data, validation_data, test_data)
 
 def vectorized_result(j):

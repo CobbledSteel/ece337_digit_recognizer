@@ -12,13 +12,14 @@ and omits many desirable features.
 #### Libraries
 # Standard library
 import random
+from functools import partial
 
 # Third-party libraries
 import numpy as np
 
 class Network(object):
 
-    def __init__(self, sizes, func, func_prime):
+    def __init__(self, sizes, func, func_prime, sigmoid_bits, weight_bits, bias_bits):
         """The list ``sizes`` contains the number of neurons in the
         respective layers of the network.  For example, if the list
         was [2, 3, 1] then it would be a three-layer network, with the
@@ -35,7 +36,12 @@ class Network(object):
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
         self.func = func
+        self.orig_func = func
         self.func_prime = func_prime
+
+        self.sigmoid_trunc = 2**sigmoid_bits
+        self.weight_trunc = 2**weight_bits
+        self.bias_trunc = 2**bias_bits
 
     def print_network(self):
         for bias in self.biases:
@@ -46,7 +52,8 @@ class Network(object):
     def feedforward(self, a):
         """Return the output of the network if ``a`` is input."""
         for b, w in zip(self.biases, self.weights):
-            a = self.func(np.dot(w, a)+b)
+            z = np.dot(w, a) + b
+            a = self.func(z)
         return a
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
@@ -79,21 +86,27 @@ class Network(object):
         print "Final Untruncated Result: {0} / {1}".format(
             self.evaluate(test_data), n_test)
 
-        bits = 1
 
+        # Truncate all the weights
         for i in range(len(self.weights)):
             for j in range(len(self.weights[i])):
                 for k in range(len(self.weights[i][j])):
-                    self.weights[i][j][k] = round(self.weights[i][j][k] * bits ) / bits
+                    self.weights[i][j][k] = round(self.weights[i][j][k] * self.weight_trunc ) / self.weight_trunc
 
+        # truncate all the biases
         for i in range(len(self.biases)):
             for j in range(len(self.biases[i])):
                 for k in range(len(self.biases[i][j])):
-                    self.biases[i][j][k] = round(self.biases[i][j][k] * bits ) / bits
+                    self.biases[i][j][k] = round(self.biases[i][j][k] * self.bias_trunc ) / self.bias_trunc
         
-        self.print_network()
 
-        print "Final Weight Truncated Result: {0} / {1}".format(
+        print "Final Truncated Result: {0} / {1}".format(
+            self.evaluate(test_data), n_test)
+
+        # truncate the sigmoid function
+        self.func = partial(self.trunc_func,trunc=self.sigmoid_trunc)
+
+        print "Final Truncated Result with Truncated Sigmoid: {0} / {1}".format(
             self.evaluate(test_data), n_test)
 
     def update_mini_batch(self, mini_batch, eta):
@@ -156,8 +169,13 @@ class Network(object):
                         for (x, y) in test_data]
         return sum(int(x == y) for (x, y) in test_results)
 
+
     def cost_derivative(self, output_activations, y):
         """Return the vector of partial derivatives \partial C_x /
         \partial a for the output activations."""
         return (output_activations-y)
+
+    def trunc_func(self, z, trunc):
+        return np.round(self.orig_func(z) * trunc) / trunc
+
 
