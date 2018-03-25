@@ -19,7 +19,7 @@ import numpy as np
 
 class Network(object):
 
-    def __init__(self, sizes, func, func_prime, sigmoid_bits, weight_bits, bias_bits):
+    def __init__(self, sizes, func, func_prime, sigmoid_bits, weight_bits, bias_bits, write_file):
         """The list ``sizes`` contains the number of neurons in the
         respective layers of the network.  For example, if the list
         was [2, 3, 1] then it would be a three-layer network, with the
@@ -42,6 +42,8 @@ class Network(object):
         self.sigmoid_trunc = 2**sigmoid_bits
         self.weight_trunc = 2**weight_bits
         self.bias_trunc = 2**bias_bits
+
+        self.write_file = write_file
 
     def print_network(self):
         for bias in self.biases:
@@ -76,38 +78,33 @@ class Network(object):
             for mini_batch in mini_batches:
                 self.update_mini_batch(mini_batch, eta)
             if test_data:
-                print "Epoch {0}: {1} / {2}".format(
-                    j, self.evaluate(test_data), n_test)
+                self.write_file.write("{0} ".format(self.evaluate(test_data)))
             else:
-                print "Epoch {0} complete".format(j)
+                self.write_file.write("Epoch {0} complete".format(j))
     
     def final_test(self,test_data):
         n_test = len(test_data)
-        print "Final Untruncated Result: {0} / {1}".format(
-            self.evaluate(test_data), n_test)
+        self.write_file.write("{0} ".format(self.evaluate(test_data)))
 
 
-        # Truncate all the weights
+        #Truncate all the weights
         for i in range(len(self.weights)):
             for j in range(len(self.weights[i])):
                 for k in range(len(self.weights[i][j])):
-                    self.weights[i][j][k] = round(self.weights[i][j][k] * self.weight_trunc ) / self.weight_trunc
+                    self.weights[i][j][k] = np.clip((round(self.weights[i][j][k] * self.weight_trunc ) / self.weight_trunc), -8, 7)
 
         # truncate all the biases
         for i in range(len(self.biases)):
             for j in range(len(self.biases[i])):
                 for k in range(len(self.biases[i][j])):
-                    self.biases[i][j][k] = round(self.biases[i][j][k] * self.bias_trunc ) / self.bias_trunc
+                    self.biases[i][j][k] = np.clip((round(self.biases[i][j][k] * self.bias_trunc ) / self.bias_trunc), -8, 7)
         
 
-        print "Final Truncated Result: {0} / {1}".format(
-            self.evaluate(test_data), n_test)
+        self.write_file.write(("{0} ".format(self.evaluate(test_data))))
 
-        # truncate the sigmoid function
-        self.func = partial(self.trunc_func,trunc=self.sigmoid_trunc)
+        # truncate the sigmoid functionself.func = partial(self.trunc_func,trunc=self.sigmoid_trunc)
 
-        print "Final Truncated Result with Truncated Sigmoid: {0} / {1}".format(
-            self.evaluate(test_data), n_test)
+        self.write_file.write(("{0}\n".format(self.evaluate(test_data))))
 
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
@@ -176,6 +173,8 @@ class Network(object):
         return (output_activations-y)
 
     def trunc_func(self, z, trunc):
+        z = np.round(z*2)/2
+        z = np.clip(z,-4,3.5)
         return np.round(self.orig_func(z) * trunc) / trunc
 
 
