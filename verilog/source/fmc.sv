@@ -10,10 +10,10 @@ module fmc (
 	input wire clk,
   	input wire n_rst,
 	input wire ready,
-	input wire address,
-	input wire data,
-	output reg data_out,
-	output reg address_in,
+	input wire [15:0] address,
+	input wire [15:0] data,
+	output reg [15:0] data_out,
+	output reg [15:0] address_in,
 	output reg ce, oe, we
 );
 	
@@ -22,24 +22,33 @@ module fmc (
 
 	flex_counter #(4) fmc_counter(
 		.clk(clk), 
-		.n_rst(n_reset), 
+		.n_rst(n_rst), 
 		.clear(clear_cnt), 
 		.count_enable(count_en), 
 		.rollover_val(4'd15), 
-		.count_out(count_out) 
+		.count_out(count_out),
+		.rollover_flag() 
 	); 
 
-	typedef enum logic [4:0] {idle, addr_ready, chip_en, output_en, data_valid,
-				  load, wait1, clear, wait2} state_type;
+	typedef enum logic [3:0] {idle, addr_ready, chip_en, output_en,
+				  data_valid, load, wait1, clear} state_type;
 	state_type state;
 	state_type next_state;
 
 	always_ff @ (posedge clk, negedge n_rst)
 	begin
-		if (n_rst == 1'b0)
+		if (n_rst == 1'b0) begin
 			state <= idle;
-		else 
+			address_in <= 0;
+			data_out <= 0;
+		end
+		else begin
 			state <= next_state;
+			if (load_addr == 1'b1)
+				address_in <= address;
+			if (load_data == 1'b1)
+				data_out <= data;
+		end
 	end
 	
 	always_comb
@@ -74,12 +83,8 @@ module fmc (
 				next_state = idle;
 				end
 			clear : begin
-				next_state = wait2;
-				end
-			wait2 : begin
-				if (count_out == 4'd11)
-				next_state = data_valid;
-				end			
+				next_state = addr_ready;
+				end	
 		endcase
 	end
 
@@ -91,7 +96,7 @@ module fmc (
 	
 		count_en = ~(state == idle);
 		load_addr = (state == addr_ready);
-		load_data = (state == load_data);
+		load_data = (state == load);
 
 		clear_cnt = ce | (state == clear);
 	end		
