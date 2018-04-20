@@ -22,8 +22,8 @@ module tb_fmc();
 
 	// Declare test bench signals
 	integer tb_test_case;
-	reg [15:0] addr_vec[0:5] = '{16'd0, 16'd3, 16'd5, 16'd1, 16'd2, 16'd4};
-	reg [15:0] data_vec[0:5] = '{16'd0, 16'd1, 16'd11, 16'd111, 16'd1111, 16'd11111};
+	reg [15:0] addr_vec [0:5] = '{16'd0, 16'd3, 16'd5, 16'd1, 16'd2, 16'd4};
+	reg [15:0] data_vec [0:5] = '{16'd0, 16'd1, 16'd11, 16'd111, 16'd1111, 16'd11111};
 
 	// Clock generation block
 	always

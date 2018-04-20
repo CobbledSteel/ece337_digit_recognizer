@@ -30,7 +30,7 @@ module fmc (
 		.rollover_flag() 
 	); 
 
-	typedef enum logic [3:0] {idle, addr_ready, chip_en, output_en,
+	typedef enum logic [2:0] {idle, addr_ready, chip_en, output_en,
 				  data_valid, load, wait1, clear} state_type;
 	state_type state;
 	state_type next_state;
