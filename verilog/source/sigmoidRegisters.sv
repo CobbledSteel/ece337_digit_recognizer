@@ -2,14 +2,14 @@ module sigmoidRegisters
 (
 	input wire clk,
 	input wire write_en,
-	input wire [0:3] data_in,
-	input wire [0:4] address,
-	output wire [0:3] data_out,
-	output wire [0:9][0:3] digit_weights 
+	input wire [3:0] data_in,
+	input wire [4:0] address,
+	output wire [3:0] data_out,
+	output wire [0:9][3:0] digit_weights 
 );
-	reg [0:3] nextData;
-	reg [0:3] chooseData;
-	wire [0:7][0:3] outputs;
+	reg [3:0] nextData;
+	reg [3:0] chooseData;
+	wire [0:7][3:0] outputs;
 
 	assign data_out = chooseData;
 

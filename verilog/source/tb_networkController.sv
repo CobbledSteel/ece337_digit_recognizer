@@ -62,8 +62,8 @@ module tb_networkController();
 		.clk(tb_clk),
 		.n_rst(tb_n_rst),
 		.write_en(tb_write_en),
-		.pixel_data1(tb_pixel_data1),
-		.pixel_data2(tb_pixel_data2),
+		.pixel_data1(tb_pixeldata1),
+		.pixel_data2(tb_pixeldata2),
 		.flashData_out(tb_flashData_out),
 		.sigmoidData_out(tb_sigmoidData_out),
 		.ALUOutput(tb_ALUOutput),
@@ -94,7 +94,7 @@ module tb_networkController();
 		input int subtask;
 	begin
 	
-		assert((expected_pixeldata[0:7] == tb_pixel_data1) & (expected_pixeldata[8:15] == tb_pixel_data2))
+		assert((expected_pixeldata[0:7] == tb_pixeldata1) & (expected_pixeldata[8:15] == tb_pixeldata2))
 			$info("PASSED Test case %0d.%0d: Test data correctly received", tb_test_case, subtask);
 		else
 			$error("FAILED Test case %0d.%0d: Test data was not correctly received", tb_test_case,subtask);

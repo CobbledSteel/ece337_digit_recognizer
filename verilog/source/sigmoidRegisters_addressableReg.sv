@@ -3,13 +3,13 @@ module sigmoidRegisters_addressableReg #(parameter ADDRESS=0)
 (
 	input wire write_en,
 	input wire clk,
-	input wire [0:3] data_in,
-	input wire [0:4] address_in,
-	output wire [0:3] data_out
+	input wire [3:0] data_in,
+	input wire [4:0] address_in,
+	output wire [3:0] data_out
 );
 	
-	reg [0:3] currentData;
-	reg [0:3] next_val;
+	reg [3:0] currentData;
+	reg [3:0] next_val;
 
 	assign data_out = currentData;
 

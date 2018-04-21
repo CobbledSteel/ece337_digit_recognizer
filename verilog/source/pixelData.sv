@@ -4,15 +4,15 @@ module pixelData
 	input wire shift_SPI,
 	input wire shift_network,
 	input wire write_en,
-	input wire [0:7] spi_in,
-	output wire [0:7] pixel_data_1,
-	output wire [0:7] pixel_data_2
+	input wire [7:0] spi_in,
+	output wire [7:0] pixel_data_1,
+	output wire [7:0] pixel_data_2
 );
-	wire [0:575] pixelData;
+	wire [575:0] pixelData;
 	wire chooseShift;
-	reg [0:7] chooseIn;
+	reg [7:0] chooseIn;
 
-	pixelData_PTPSR firstReg(.clk(clk), .shift_en(chooseShift), .parallel_in(chooseIn),.parallel_out(pixelData[0:7]));
+	pixelData_PTPSR firstReg(.clk(clk), .shift_en(chooseShift), .parallel_in(chooseIn),.parallel_out(pixelData[7:0]));
 
 	genvar i;
 	generate
@@ -22,15 +22,15 @@ module pixelData
 	endgenerate
 
 	assign chooseShift = shift_SPI | shift_network;
-	assign pixel_data_1 = pixelData[560:567];
-	assign pixel_data_2 = pixelData[568:575];
+	assign pixel_data_1 = pixelData[567:560];
+	assign pixel_data_2 = pixelData[575:568];
 	
 	always_comb
 	begin
 		if(write_en == 1)
 			chooseIn = spi_in;
 		else
-			chooseIn = pixelData[568:575];
+			chooseIn = pixelData[575:568];
 	end
 
 endmodule
