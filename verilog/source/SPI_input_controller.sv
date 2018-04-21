@@ -6,7 +6,7 @@
 // Version:     1.0  Initial Design Entry
 // Description: SPI input controller file
 
-module spi_input (
+module SPI_input_controller (
 	input wire clk,
 	input wire n_rst,
 	input wire MOSI, SCK, SS,
@@ -17,11 +17,12 @@ module spi_input (
 	output reg calculate_cost,
 	output reg [9:0] expected_label
 );
-	reg is_idle, delay;
+	reg is_idle, delay1, delay2;
 	reg async_in, sync_out, sig, sig_edge;
-	reg pixel_rollover, flag;
+	reg pixel_rollover, flag_long, flag;
 	reg [7:0] parallel_out;
 	reg [9:0] temp_label;
+	wire [6:0] pixel_count;
 	
 	typedef enum logic [2:0] {idle, load_pix, done_pix, load_exp, done_exp} state_type;
 	state_type state;
@@ -30,9 +31,9 @@ module spi_input (
 	flex_counter #(7) spi_input_7bit_counter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(is_idle), 
-		.count_enable(sig_edge), 
-		.rollover_val(7'd71), 
-		.count_out(),
+		.count_enable(delay1), 
+		.rollover_val(7'd72), 
+		.count_out(pixel_count),
 		.rollover_flag(pixel_rollover) 
 	); 
 	
@@ -42,7 +43,7 @@ module spi_input (
 		.count_enable(sig_edge), 
 		.rollover_val(4'd7), 
 		.count_out(),
-		.rollover_flag(flag) 
+		.rollover_flag(flag_long) 
 	); 
 	
 	gen_stp_sr #(.NUM_BITS(8), .SHIFT_MSB(0)) spi_input_stpsr(
@@ -59,21 +60,23 @@ module spi_input (
 	begin
 		if (n_rst == 1'b0) begin
 			state <= idle;
-			SPI_in <= '0;
-			delay <= '0;
+			SPI_in <= '1;
+			delay1 <= '0;
+			delay2 <= '0;
 			shift_SPI <= '0;
-			exptected_label <= '0;
+			expected_label <= '0;
 		end
 		else begin
 			state <= next_state;
 			
-			if (flag == 1'b1) // SPI_in mux
+			if (delay1 == 1'b1) // SPI_in mux
 			SPI_in <= parallel_out;
 			else 
 			SPI_in <= SPI_in;
 			
-			delay <= flag; // shift strobe delay
-			shift_SPI <= delay;
+			delay1 <= flag; // shift strobe delay
+			delay2 <= delay1;
+			shift_SPI <= delay2;
 
 			expected_label <= temp_label; // 10-bit demux
 		end
@@ -84,20 +87,20 @@ module spi_input (
 		next_state = state;
 		case(state)
 			idle : begin
-				if (data_ready & (SPI_in == 2'b00))
+				if (data_ready & (SPI_in == 0))
 				next_state = load_pix;
-				else if (data_ready & (SPI_in == 2'b01))
+				else if (data_ready & (SPI_in == 1))
 				next_state = load_exp;
 				end
 			load_pix : begin
-				if (pixel_rollover == 1'b1)
+				if (pixel_rollover == 1'b1 & shift_SPI)
 				next_state = done_pix;
 				end
 			done_pix : begin
 				next_state = idle;
 				end
 			load_exp : begin
-				if (shift_SPI == 1'b1)
+				if (delay1 == 1'b1)
 				next_state = done_exp;
 				end
 			done_exp : begin
@@ -107,7 +110,10 @@ module spi_input (
 	end
 
 	always_comb
-	begin : 
+	begin 
+		// flag correction
+		flag = flag_long & sig_edge;
+
 		// output logic
 		is_idle = (state == idle);
 		calculate_cost = (state == done_exp);
