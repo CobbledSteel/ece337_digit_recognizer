@@ -103,10 +103,10 @@ module SPI_output_controller (
 		
 		// combinational logic for ptssr
 		load_en = send_digit | send_cost;
-		if (send_digit & data_ready)
-			parallel_data = {4'b0000,detected_digit};
-		else if (send_cost & data_ready)
+		if (send_cost & data_ready)
 			parallel_data = cost_output;
+		else if (data_ready)
+			parallel_data = {4'b0000,detected_digit};
 		else 
 			parallel_data = '1;
 	

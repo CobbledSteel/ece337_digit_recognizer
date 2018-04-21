@@ -131,6 +131,7 @@ begin
 	tb_SCK_enable = 0;
 	tb_cost_ready = 0;
 	tb_data_ready = 1;
+	tb_detected_digit = digit;
 	tb_network_done = 1;
 	tb_SPI_in = 0;
 	@(negedge tb_clk)
@@ -140,7 +141,35 @@ begin
 	tb_shift_SPI = 0;
 	#(200);
 	tb_SCK_enable = 1;
+	for(i=0;i<8;i++)
+	begin
+		@(posedge tb_SCK);
+		tb_SPI_in = 255;
+		data = data >> 1;
+		data[7] = tb_MISO;
+		@(negedge tb_clk)
+		tb_shift_SPI = 1;
+		@(negedge tb_clk);
+		tb_shift_SPI = 0;
+	end
+	tb_SCK_enable = 0;
+	if(data != tb_detected_digit) $error("Cost not properlty sent!");
+	tb_data_ready = 0;
+	
+ 	#400;
+	tb_SS = 0;
+	tb_SCK_enable = 0;
+	tb_cost_ready = 0;
+	tb_data_ready = 0;
 	tb_detected_digit = digit;
+	tb_SPI_in = 0;
+	@(negedge tb_clk)
+	tb_shift_SPI = 1;
+	@(negedge tb_clk)
+	tb_network_done = 0;
+	tb_shift_SPI = 0;
+	#(200);
+	tb_SCK_enable = 1;
 	for(i=0;i<8;i++)
 	begin
 		@(posedge tb_SCK);
@@ -155,7 +184,6 @@ begin
 	tb_SCK_enable = 0;
 	if(data != 255) $error("Cost not properlty sent!");
 	tb_data_ready = 0;
-	
 end
 endtask
 
