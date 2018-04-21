@@ -6,7 +6,7 @@
 // Version:     1.0  Initial Design Entry
 // Description: Parallel-to-serial shift register
 
-module flex_pts_sr
+module gen_pts_sr
 #(
 	parameter NUM_BITS = 4,
 	parameter SHIFT_MSB = 1'b1
