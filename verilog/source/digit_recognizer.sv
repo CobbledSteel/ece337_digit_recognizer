@@ -15,27 +15,30 @@ module digit_recognizer (
 	output reg ce, oe, we,
 	output reg [15:0] address
 );
-	//  network controller signals
-	wire network_done;			// digit decode; spi output
+
 	wire [3:0] weight1, weight2, weight3, weight4;	// sigmoid alu
 	wire [3:0] input1, input2, input3, input4;	// sigmoid alu
 	wire accumulate, clear;				// sigmoid alu
-	wire [3:0] bias, alu_output; 			// sigmoid ALU
-	wire data_ready, write_en;		// SPI input
-	wire [7:0] pixel_data1, pixel_data2;	// pixel data regs
-	wire shift_network;			// pixel data regs
-	wire flash_ready;			// fmc
-	wire [15:0] flash_address, flash_data;	// fmc
+	wire [3:0] bias, alu_output; 			// sigmoid alu
+
+	wire [7:0] pixel_data1, pixel_data2;		// pixel data regs
+	wire shift_network;				// pixel data regs
+
+	wire flash_ready;				// fmc
+	wire [15:0] flash_address, flash_data;		// fmc
 	wire sigmoid_write_en;				// sigmoid regs
 	wire [4:0] sigmoid_address;			// sigmoid regs
 	wire [3:0] sigmoidData_in, sigmoidData_out; 	// sigmoid regs
-
+	
+	wire data_ready, write_en;			// spi input
 	wire [7:0] SPI_in;				// spi input
 	wire shift_SPI, calculate_cost;			// spi input
 	wire [0:9] expected_label;			// spi input
 	
 	wire calculation_complete;			// cost calculator
 	wire [7:0] cost_output;				// cost calculator	
+
+	wire network_done;				// digit decode; spi output
 	wire [0:9][3:0] digit_weights;			// digit decode; sigmoid regs; cost calculator
 	wire [3:0] detected_digit;			// digit decode
 	
