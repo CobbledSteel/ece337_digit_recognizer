@@ -7,7 +7,8 @@
 // Description: SPI input controller file
 
 module spi_input (
-
+	input wire clk,
+	input wire n_rst,
 	input wire MOSI, SCK, SS,
 	input wire data_ready,
 	output reg shift_SPI,
