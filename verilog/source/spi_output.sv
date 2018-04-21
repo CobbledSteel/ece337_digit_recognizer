@@ -17,7 +17,7 @@ module spi_output (
 	input wire cost_ready,
 	input wire [7:0] cost_output,
 	input wire [3:0] detected_digit,
-	output wire MISO
+	output reg MISO
 );
 	reg send_digit, send_cost; // output logic
 	reg load_en; serial_data; // ptssr
