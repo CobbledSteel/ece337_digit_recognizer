@@ -2,12 +2,12 @@ module pixelData_PTPSR
 (
 	input wire shift_en,
 	input wire clk,
-	input wire [0:7] parallel_in,
-	output wire [0:7] parallel_out
+	input wire [7:0] parallel_in,
+	output wire [7:0] parallel_out
 );
 
-	reg [0:7] currentData;
-	reg [0:7] next_val;
+	reg [7:0] currentData;
+	reg [7:0] next_val;
 
 	assign parallel_out = currentData;
 
