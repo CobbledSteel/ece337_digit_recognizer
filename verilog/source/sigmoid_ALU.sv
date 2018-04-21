@@ -20,7 +20,7 @@ module sigmoid_ALU
 	input wire [3:0] bias,
 	input wire accumulate,
 	input wire clear,
-	output wire [4:0] out,
+	output wire [3:0] out,
 	output wire [15:0] accum_out
 );
 

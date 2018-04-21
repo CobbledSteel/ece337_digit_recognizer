@@ -11,7 +11,7 @@ module external_fm (
 	output wire [15:0] data
 );
 	// hbias, hweights, 
-	reg [325:0] [15:0] data_array;
+	reg [0:325] [15:0] data_array;
 	reg [3:0] num1, num2, num3, num4;
 	integer i,j,k;
 	integer fh_biases, fh_weights, fo_biases, fo_weights;
