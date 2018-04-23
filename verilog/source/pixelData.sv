@@ -17,7 +17,7 @@ module pixelData
 	genvar i;
 	generate
 	for (i = 1; i<=71 ;i = i + 1) begin
-		pixelData_PTPSR dataReg(.clk(clk), .shift_en(chooseShift), .parallel_in(pixelData[(i-1)*8:((i-1)*8)+7]), .parallel_out(pixelData[i*8:(i*8)+7]));
+		pixelData_PTPSR dataReg(.clk(clk), .shift_en(chooseShift), .parallel_in(pixelData[((i-1)*8)+7:((i-1)*8)]), .parallel_out(pixelData[(i*8)+7:(i*8)]));
 	end
 	endgenerate
 

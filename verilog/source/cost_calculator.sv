@@ -24,7 +24,7 @@ module cost_calculator
   stateType next_state;
 
   reg [3:0] sub_reg;
-  reg [3:0] sq_reg;
+  reg [4:0] sq_reg;
   reg [7:0] add_reg;
   reg [7:0] sto_reg;
   reg [3:0] next_sub_reg;
@@ -109,7 +109,7 @@ module cost_calculator
       end else begin
         state <= next_state;
 	sub_reg <= next_sub_reg;
-	sq_reg <= next_sq_reg[6:3];
+	sq_reg <= next_sq_reg[6:2];
 	add_reg <= next_add_reg;
 	if (state == STO) begin
 	  sto_reg <= next_sto_reg;
@@ -196,6 +196,6 @@ module cost_calculator
 
   assign cost_output = sto_reg;
   assign next_sto_reg = add_reg;
-  assign adder_input_a = (adder_input_en) ? {4'b0000, sq_reg} : 8'h00;
+  assign adder_input_a = (adder_input_en) ? {3'b000, sq_reg} : 8'h00;
 
 endmodule
