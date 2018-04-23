@@ -25,13 +25,12 @@ module fmc (
 		.n_rst(n_rst), 
 		.clear(clear_cnt), 
 		.count_enable(count_en), 
-		.rollover_val(4'd15), 
+		.rollover_val(4'd12), 
 		.count_out(count_out),
 		.rollover_flag() 
 	); 
 
-	typedef enum logic [2:0] {idle, addr_ready, chip_en, output_en,
-				  data_valid, load, wait1, clear} state_type;
+	typedef enum logic [1:0] {idle, chip_en, output_en, load} state_type;
 	state_type state;
 	state_type next_state;
 
@@ -57,9 +56,6 @@ module fmc (
 		case(state)
 			idle : begin
 				if (ready == 1'b1)
-				next_state = addr_ready;
-				end
-			addr_ready : begin
 				next_state = chip_en;
 				end
 			chip_en : begin
@@ -67,37 +63,31 @@ module fmc (
 				next_state = output_en;
 				end
 			output_en : begin
-				if (count_out == 4'd11)
+				if (count_out == 4'd10)
 				next_state = data_valid;
 				end
 			data_valid : begin
 				next_state = load;
 				end
 			load : begin
-				next_state = wait1;
-				end
-			wait1 : begin
 				if (ready == 1'b1)
-				next_state = clear;
-				else if (count_out == 4'd15)
+				next_state = chip_en;
+				else
 				next_state = idle;
 				end
-			clear : begin
-				next_state = addr_ready;
-				end	
 		endcase
 	end
 
 	always_comb
 	begin : outputLogic
 		we = 1'b1;
-		ce = (state == idle) | (state == addr_ready);
+		ce = (state == idle);
 		oe = ce | (state == chip_en);
 	
 		count_en = ~(state == idle);
-		load_addr = (state == addr_ready);
+		load_addr = (state == load);
 		load_data = (state == load);
 
-		clear_cnt = ce | (state == clear);
+		clear_cnt = (state == idle) | (state == load);
 	end		
 endmodule 
