@@ -6,7 +6,7 @@
 // Version:     1.0  Initial Design Entry
 // Description: Top level file digit recognizer
 
-module digit_recognizer (
+module digit_recognizer_final (
 	input wire clk,
 	input wire n_rst,
 	input wire SCK, SS, MOSI,
@@ -68,7 +68,7 @@ module digit_recognizer (
 		.clear(clear)
 	);
 	
-	spi_input_controller 	top_spi_input (		
+	SPI_input_controller 	top_spi_input (		
 		.clk(clk), .n_rst(n_rst), 
 		.MOSI(MOSI), .SCK(SCK), .SS(SS),
 		.data_ready(data_ready),
@@ -79,7 +79,7 @@ module digit_recognizer (
 		.expected_label(expected_label)
 	);
 	
-	spi_output_controller 	top_spi_output (
+	SPI_output_controller 	top_spi_output (
 		.clk(clk), .n_rst(n_rst), 
 		.shift_SPI(shift_SPI), 
 		.SPI_in(SPI_in),
