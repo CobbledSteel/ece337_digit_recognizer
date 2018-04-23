@@ -127,7 +127,7 @@ module tb_cost_calculator
 			sub_term = $unsigned(tb_digit_weights[i]) - $unsigned({tb_expected_label[i], 3'b000});
 		end
 		sq_term = $unsigned(sub_term) * $unsigned(sub_term);
-		cost_val = cost_val + (sq_term[6:3]);
+		cost_val = cost_val + {3'b000, sq_term[6:2]};
 	end
   endtask
 
