@@ -344,173 +344,25 @@ module networkController
 		end
 
 	if(topState == LAYER2) begin
-		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;
-		ready = 0;
-		accumulate = 0;
-		clear = 0;
-		sigmoid_address = 0;
-	case(layer2State)
-		LOAD_BIAS:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 1;
-			sig_write = 0;
-			ready = 1;
-			accumulate = 0;
-			clear = 1;
-			end
-		LOAD_WEIGHT:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 1;
-			sig_write = 0;
-			ready = 1;
-			accumulate = 0;
-			clear = 0;
-			end
-		CHECK_DONE:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			end
-		LOAD_NEURON1:
-			begin
-			input_en = 1;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 1;
-			accumulate = 0;
-			clear = 0;
-			sigmoid_address = 0 + (inputCountOut) * 4;
-			end
-		LOAD_NEURON2:
-			begin
-			input_en = 1;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 1;
-			accumulate = 0;
-			clear = 0;
-			sigmoid_address = 1 + (inputCountOut) * 4;
-			end
-		LOAD_NEURON3:
-			begin
-			input_en = 1;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 1;
-			accumulate = 0;
-			clear = 0;
-			sigmoid_address = 2 + (inputCountOut) * 4;
-			end
-		LOAD_NEURON4:
-			begin
-			input_en = 1;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 1;
-			accumulate = 0;
-			clear = 0;
-			sigmoid_address = 3 + (inputCountOut) * 4;
-			end
-		WAIT1:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			end
-		WAIT2:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			end
-		ACCU:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 1;
-			clear = 0;
-			end
-		SHIFT1:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			shift = 1;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			end
-		INC_INPUT:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			end
-		CHECK_INPUT:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			end
-		INC_NEURON:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 1;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			sigmoid_address = 8 + neuronCountOut;
-			end
-		LAYER_DONE:
-			begin
-			input_en = 0;
-			weight_en = 0;
-			bias_en = 0;
-			sig_write = 0;
-			ready = 0;
-			accumulate = 0;
-			clear = 0;
-			end
-		
-		endcase
-	end
-end	
+		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
+			case(layer2State)
+			LOAD_BIAS:   	begin 	input_en = 0;weight_en = 0;bias_en = 1;sig_write = 0;ready = 1;accumulate = 0;clear = 1;	end
+			LOAD_WEIGHT: 	begin 	input_en = 0;weight_en = 0;bias_en = 1;sig_write = 0;ready = 1;accumulate = 0;clear = 0;	end
+			CHECK_DONE:  	begin 	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;	end
+			LOAD_NEURON1:	begin 	input_en = 1;weight_en = 0;bias_en = 0;sig_write = 0;ready = 1;accumulate = 0;clear = 0;sigmoid_address = 0 + (inputCountOut) * 4;	end
+			LOAD_NEURON2:	begin 	input_en = 1;weight_en = 0;bias_en = 0;sig_write = 0;ready = 1;accumulate = 0;clear = 0;sigmoid_address = 1 + (inputCountOut) * 4;	end
+			LOAD_NEURON3:	begin	input_en = 1;weight_en = 0;bias_en = 0;sig_write = 0;ready = 1;accumulate = 0;clear = 0;sigmoid_address = 2 + (inputCountOut) * 4;	end
+			LOAD_NEURON4:	begin	input_en = 1;weight_en = 0;bias_en = 0;sig_write = 0;ready = 1;accumulate = 0;clear = 0;sigmoid_address = 3 + (inputCountOut) * 4;	end
+			WAIT1:		begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;	end
+			WAIT2:		begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;	end
+			ACCU:		begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 1;clear = 0;	end
+			SHIFT1:		begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;	shift = 1;	end
+			INC_INPUT:	begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;	end
+			CHECK_INPUT:	begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;	end
+			INC_NEURON:	begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 1;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 8 + neuronCountOut;	end
+			LAYER_DONE:	begin	input_en = 0;weight_en = 0;bias_en = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;	end
+			endcase
+		end
+	end	
 
 endmodule
-
-
