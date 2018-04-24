@@ -3,6 +3,7 @@ module pixelData
 	input wire clk,
 	input wire shift_SPI,
 	input wire shift_network,
+	input wire network_calc,
 	input wire write_en,
 	input wire [7:0] spi_in,
 	output wire [7:0] pixel_data_1,
@@ -21,7 +22,7 @@ module pixelData
 	end
 	endgenerate
 
-	assign chooseShift = shift_SPI | shift_network;
+	assign chooseShift = (shift_SPI && ~network_calc) | (shift_network & network_calc);
 	assign pixel_data_1 = pixelData[567:560];
 	assign pixel_data_2 = pixelData[575:568];
 	

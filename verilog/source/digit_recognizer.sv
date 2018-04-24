@@ -39,6 +39,7 @@ module digit_recognizer_final (
 	wire [7:0] cost_output;				// cost calculator	
 
 	wire network_done;				// digit decode; spi output
+	wire network_calc;
 	wire [0:9][3:0] digit_weights;			// digit decode; sigmoid regs; cost calculator
 	wire [3:0] detected_digit;			// digit decode
 	
@@ -55,6 +56,7 @@ module digit_recognizer_final (
 		.flashData_out(flash_data),
 
        		.network_done(network_done),		// detected digit
+       		.network_calc(network_calc),		// detected digit
         	.sigmoidData_in(sigmoidData_in),	// sigmoid registers
 		.sigmoidData_out(sigmoidData_out),
         	.sigmoid_address(sigmoid_address),
@@ -96,6 +98,7 @@ module digit_recognizer_final (
 		.clk(clk),
 		.shift_SPI(shift_SPI),
 		.shift_network(shift_network),
+		.network_calc(network_calc),
 		.write_en(write_en),
 		.spi_in(SPI_in),
 		.pixel_data_1(pixel_data1), .pixel_data_2(pixel_data2)
