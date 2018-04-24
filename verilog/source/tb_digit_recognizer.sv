@@ -71,16 +71,16 @@ endtask
 task send_image();
 begin
 	$fscanf(img_fptr, "Expected digit: %d", expected_val);
-	for(j = 0; j < 36; j+=2)
+	for(j = 0; j < 36; j+=1)
 	begin
 		$fscanf(img_fptr, "%d %d %d %d", temp[0], temp[1], temp[2], temp[3]);
-		//send_byte({temp[1],temp[0]});
-		//send_byte({temp[3],temp[2]});
+		send_byte({temp[1],temp[0]});
+		send_byte({temp[3],temp[2]});
 		
-		send_byte({4'd2,4'd1});
-		send_byte({4'd4,4'd3});
-		send_byte({4'd2,4'd1});
-		send_byte({4'd4,4'd3});
+		//send_byte({4'd2,4'd1});
+		//send_byte({4'd4,4'd3});
+		//send_byte({4'd2,4'd1});
+		//send_byte({4'd4,4'd3});
 		//send_byte({4'd6,4'd5});
 		//send_byte({4'd8,4'd7});
 	end

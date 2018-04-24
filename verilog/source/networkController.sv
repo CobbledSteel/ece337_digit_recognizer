@@ -4,6 +4,7 @@ module networkController
 	input wire n_rst,
 	input wire write_en,
 	input [3:0] sigmoidData_out,
+	input [3:0] ALUOutput,
 	input [7:0] pixel_data1, pixel_data2,
 	input [15:0] flashData_out,
 	
@@ -20,7 +21,7 @@ module networkController
 	
 	output reg [3:0] weight1, weight2, weight3, weight4,	// sigmoid alu
 	output reg [3:0] input1, input2, input3, input4,
-	output reg [3:0] bias, ALUOutput,
+	output reg [3:0] bias,
 	output reg clear, accumulate
 	
 );
@@ -45,6 +46,8 @@ module networkController
 	reg [3:0] neuronCountOut;
 	reg [5:0] inputCountOut;
 	reg flashClear;
+	reg inputClear;
+	reg neuronClear;
 	reg inc_input;
 	reg inc_neuron;
 
@@ -54,7 +57,7 @@ module networkController
 	assign flash_ready = ready;
 	typedef enum bit [4:0] {IDLE, PIXEL_WAIT, LAYER1, LAYER2, ALERT_FINISH, 
 				REQ_BIAS, WAIT_BIAS, REQ_WEIGHT, GET_BIAS, WAIT_WEIGHT, CHECK_DONE, LOAD_DATA, 
-				WAIT1, WAIT2, ACCU, SHIFT1, SHIFT2, INC_INPUT, 
+				WAIT1, WAIT2,WAIT3, ACCU, SHIFT1, SHIFT2, INC_INPUT, 
 				CHECK_INPUT, INC_NEURON, LAYER_DONE, LOAD_NEURON1, 
 				LOAD_NEURON2, LOAD_NEURON3, LOAD_NEURON4} stateType;
 	stateType topState, nxt_topState;
@@ -64,7 +67,7 @@ module networkController
 
 	flex_counter #(.NUM_CNT_BITS(6)) inputCounter(
 		.clk(clk), .n_rst(n_rst), 
-		.clear(1'b0), 
+		.clear(inputClear), 
 		.count_enable(inc_input), 
 		.rollover_val(input_rollover_in), 
 		.count_out(inputCountOut), 
@@ -88,7 +91,7 @@ module networkController
 
 	flex_counter #(.NUM_CNT_BITS(4)) neuronCounter(
 		.clk(clk), .n_rst(n_rst), 
-		.clear(1'b0), 
+		.clear(neuronClear), 
 		.count_enable(inc_neuron), 
 		.rollover_val(neuron_rollover_in), 
 		.count_out(neuronCountOut), 
@@ -257,19 +260,20 @@ module networkController
 
 			LOAD_DATA: nxt_layer1State = WAIT1;
 			WAIT1: nxt_layer1State = WAIT2;
-			WAIT2: nxt_layer1State = ACCU;
+			WAIT2: nxt_layer1State = WAIT3;
+			WAIT3: nxt_layer1State = ACCU;
 			ACCU: nxt_layer1State = SHIFT1;
 			SHIFT1: nxt_layer1State = SHIFT2;
 			SHIFT2: nxt_layer1State = INC_INPUT;
 			INC_INPUT: nxt_layer1State = CHECK_INPUT;
 
 			CHECK_INPUT: begin
-				if(input_rollover == 1 && flash_counter == 11)
+				if(input_rollover == 1 && flash_counter == 10)
 				nxt_layer1State = INC_NEURON;
 				else if(flash_counter == 11)
 				nxt_layer1State = CHECK_DONE;
 				end
-			INC_NEURON: nxt_layer1State = GET_BIAS;
+			INC_NEURON: nxt_layer1State = REQ_WEIGHT;
 			LAYER_DONE: nxt_layer1State = IDLE;
 		endcase
 	end
@@ -302,7 +306,7 @@ module networkController
 				end
 			CHECK_DONE: begin
 				if(neuron_rollover == 0)
-				nxt_layer2State = LOAD_DATA;
+				nxt_layer2State = LOAD_NEURON1;
 				else
 				nxt_layer2State = LAYER_DONE;
 				end
@@ -312,7 +316,8 @@ module networkController
 			LOAD_NEURON3: nxt_layer2State = LOAD_NEURON4;
 			LOAD_NEURON4: nxt_layer2State = WAIT1;
 			WAIT1: nxt_layer2State = WAIT2;
-			WAIT2: nxt_layer2State = ACCU;
+			WAIT2: nxt_layer2State = WAIT3;
+			WAIT3: nxt_layer2State = ACCU;
 			ACCU: nxt_layer2State = INC_INPUT;
 			INC_INPUT: nxt_layer2State = CHECK_INPUT;
 
@@ -322,7 +327,7 @@ module networkController
 				else if(flash_counter == 11)
 				nxt_layer2State = CHECK_DONE;
 				end
-			INC_NEURON: nxt_layer2State = REQ_WEIGHT;
+			INC_NEURON: nxt_layer2State = GET_BIAS;
 			LAYER_DONE: nxt_layer2State = IDLE;
 		endcase
 	end
@@ -346,14 +351,16 @@ module networkController
 		input_en = 0; weight_en = 0; bias_en = 0;shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	inc_input = 0;	inc_neuron = 0;
 	if(topState == LAYER1) 	begin
 		input_en = 0;weight_en = 0;bias_en = 0;	shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
-		inc_input  = layer1State == INC_INPUT;
-		inc_neuron = layer1State == INC_NEURON;
-		bias_en    = layer1State == GET_BIAS;
-		weight_en  = layer1State == LOAD_DATA;
-		addr_en    = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == LOAD_DATA);
-		clear      = layer1State == REQ_BIAS;
-		accumulate = layer1State == ACCU;
-		sig_write  = layer1State == INC_NEURON;
+		inc_input   = layer1State == INC_INPUT;
+		inc_neuron  = layer1State == INC_NEURON;
+		bias_en     = layer1State == GET_BIAS;
+		weight_en   = layer1State == LOAD_DATA;
+		addr_en     = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == LOAD_DATA);
+		clear       = layer1State == GET_BIAS ;
+		accumulate  = layer1State == ACCU;
+		sig_write   = layer1State == INC_NEURON;
+		inputClear  = layer1State == LAYER_DONE;
+		neuronClear = layer1State == LAYER_DONE;
 		case(layer1State)
 			REQ_BIAS:    begin input_en = 0; shift = 0; ready = 1; sigmoid_address = neuronCountOut; flashClear = 0; end
 			WAIT_BIAS:   begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
@@ -364,6 +371,7 @@ module networkController
 			LOAD_DATA:   begin input_en = 1; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
 			WAIT1:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
 			WAIT2:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end	
+			WAIT3:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end	
 			ACCU:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
 			SHIFT1:	     begin input_en = 0; shift = 1; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
 			SHIFT2:	     begin input_en = 0; shift = 1; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
@@ -375,30 +383,32 @@ module networkController
 		end
 
 	if(topState == LAYER2) begin
-		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
-		inc_input  = layer2State == INC_INPUT;
-		inc_neuron = layer2State == INC_NEURON;
-		bias_en    = layer2State == GET_BIAS;
-		weight_en  = layer2State == LOAD_DATA;
-		addr_en    = (layer2State == REQ_BIAS) || (layer2State == REQ_WEIGHT) || (layer2State == CHECK_DONE);
-		clear      = layer2State == REQ_BIAS;
-		accumulate = layer2State == ACCU;
-		sig_write  = layer2State == INC_NEURON;
+		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0; flashClear = 0;
+		inc_input   = layer2State == INC_INPUT;
+		inc_neuron  = layer2State == INC_NEURON;
+		bias_en     = layer2State == GET_BIAS;
+		weight_en   = layer2State == LOAD_NEURON1;
+		addr_en     = (layer2State == REQ_BIAS) || (layer2State == REQ_WEIGHT) || (layer2State == CHECK_DONE);
+		clear       = layer2State == GET_BIAS;
+		accumulate  = layer2State == ACCU;
+		sig_write   = layer2State == INC_NEURON;
+		inputClear  = layer2State == LAYER_DONE;
+		neuronClear = layer2State == LAYER_DONE;
 		case(layer2State)
 			REQ_BIAS:   	begin 	input_en = 0; ready = 1; 	end
 			WAIT_BIAS:   	begin 	input_en = 0; ready = 0; 	end
 			REQ_WEIGHT: 	begin 	input_en = 0; ready = 1; 	end
 			GET_BIAS:	begin 	input_en = 0; ready = 0;	end
 			WAIT_WEIGHT: 	begin	input_en = 0; ready = 0;	end
-			CHECK_DONE:  	begin 	input_en = 0; ready = 0; 	end
+			CHECK_DONE:  	begin 	input_en = 0; ready = 1; 	end
 			LOAD_NEURON1:	begin 	input_en = 1; ready = 0;  sigmoid_address = 0 + (inputCountOut) * 4;	end
 			LOAD_NEURON2:	begin 	input_en = 1; ready = 0;  sigmoid_address = 1 + (inputCountOut) * 4;	end
 			LOAD_NEURON3:	begin	input_en = 1; ready = 0;  sigmoid_address = 2 + (inputCountOut) * 4;	end
 			LOAD_NEURON4:	begin	input_en = 1; ready = 0;  sigmoid_address = 3 + (inputCountOut) * 4;	end
 			WAIT1:		begin	input_en = 0; ready = 0; 	end
 			WAIT2:		begin	input_en = 0; ready = 0; 	end
+			WAIT3:		begin	input_en = 0; ready = 0; 	end
 			ACCU:		begin	input_en = 0; ready = 0; 	end
-			SHIFT1:		begin	input_en = 0; ready = 0; 	shift = 1;	end
 			INC_INPUT:	begin	input_en = 0; ready = 0; 	end
 			CHECK_INPUT:	begin	input_en = 0; ready = 0; 	end
 			INC_NEURON:	begin	input_en = 0; ready = 0; sigmoid_address = 8 + neuronCountOut;	end
