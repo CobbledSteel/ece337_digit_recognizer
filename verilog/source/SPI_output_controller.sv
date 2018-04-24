@@ -10,6 +10,7 @@ module SPI_output_controller (
 	input wire clk,
 	input wire n_rst,
 	input wire shift_SPI, 
+	input reg  sig_edge,
 	input wire [7:0] SPI_in,
 	input wire SCK, SS,
 	input wire network_done,
@@ -49,7 +50,7 @@ module SPI_output_controller (
 	gen_pts_sr #(.NUM_BITS(8), .SHIFT_MSB(0)) spi_output_ptssr (
 		.clk(clk), 
 		.n_rst(n_rst), 
-		.shift_enable(shift_output),
+		.shift_enable(sig_edge),
 		.load_enable(load_en),
 		.parallel_in(parallel_data),
 		.serial_out(serial_data)

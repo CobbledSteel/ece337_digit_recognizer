@@ -12,6 +12,7 @@ module networkController
 	output wire shift_network,	// pixel data regs
 	output reg network_done,	// digit detect; spi output
 	output reg network_calc,
+	output reg digit_done,
 	output wire flash_ready,	// flash mem
 	output reg [15:0] flash_address,
 
@@ -50,12 +51,15 @@ module networkController
 	reg neuronClear;
 	reg inc_input;
 	reg inc_neuron;
+	reg inc_detect;
+
+	wire [7:0] detect_count;
 
 	assign sigmoidData_in = ALUOutput;
 	assign sigmoid_write_en = sig_write;
 	assign shift_network = shift;
 	assign flash_ready = ready;
-	typedef enum bit [4:0] {IDLE, PIXEL_WAIT, LAYER1, LAYER2, ALERT_FINISH, 
+	typedef enum bit [4:0] {IDLE, PIXEL_WAIT, LAYER1, LAYER2, ALERT_FINISH, WAIT_DIGIT,
 				REQ_BIAS, WAIT_BIAS, REQ_WEIGHT, GET_BIAS, WAIT_WEIGHT, CHECK_DONE, LOAD_DATA, 
 				WAIT1, WAIT2,WAIT3, ACCU, SHIFT1, SHIFT2, INC_INPUT, 
 				CHECK_INPUT, INC_NEURON, LAYER_DONE, LOAD_NEURON1, 
@@ -96,6 +100,14 @@ module networkController
 		.rollover_val(neuron_rollover_in), 
 		.count_out(neuronCountOut), 
 		.rollover_flag(neuron_rollover));
+
+	flex_counter #(.NUM_CNT_BITS(8)) detectCounter(
+		.clk(clk), .n_rst(n_rst), 
+		.clear(), 
+		.count_enable(inc_detect), 
+		.rollover_val(8'd255), 
+		.count_out(detect_count), 
+		.rollover_flag(digit_done));
 
 
 	always_ff@(posedge clk, negedge n_rst)
@@ -221,7 +233,10 @@ module networkController
 				if (layer2State == LAYER_DONE)
 				nxt_topState = ALERT_FINISH;
 				end
-			ALERT_FINISH: nxt_topState = IDLE;
+			ALERT_FINISH: nxt_topState = WAIT_DIGIT;
+			WAIT_DIGIT: begin
+				if (digit_done) nxt_topState = IDLE;
+				end
 		endcase
 	end
 
@@ -285,7 +300,7 @@ module networkController
 		case(layer2State)
 			IDLE: begin
 				if(topState == LAYER2)
-				nxt_layer2State = REQ_BIAS;
+				nxt_layer2State = LOAD_NEURON1;
 				end
 			REQ_BIAS: begin
 				nxt_layer2State = WAIT_BIAS;
@@ -322,12 +337,12 @@ module networkController
 			INC_INPUT: nxt_layer2State = CHECK_INPUT;
 
 			CHECK_INPUT: begin
-				if(input_rollover == 1 && flash_counter == 11)
+				if(input_rollover == 1 && flash_counter == 10)
 				nxt_layer2State = INC_NEURON;
 				else if(flash_counter == 11)
 				nxt_layer2State = CHECK_DONE;
 				end
-			INC_NEURON: nxt_layer2State = GET_BIAS;
+			INC_NEURON: nxt_layer2State = REQ_WEIGHT; 
 			LAYER_DONE: nxt_layer2State = IDLE;
 		endcase
 	end
@@ -335,14 +350,16 @@ module networkController
 
 	always_comb
 	begin: TOP_OUT_LOGIC
-		input_rollover_in = 0; neuron_rollover_in = 0; network_done = 0; network_calc = 0; data_ready = 0;
+		input_rollover_in = 0; neuron_rollover_in = 0; network_done = 0; network_calc = 0; data_ready = 0; inc_detect = 0;
 		
+		inc_detect = topState == WAIT_DIGIT;
 		case(topState)
-			IDLE: 		begin 	input_rollover_in = 0;  neuron_rollover_in = 0;  network_done = 1; network_calc = 0; data_ready = 1; 	end	
+			IDLE: 		begin 	input_rollover_in = 0;  neuron_rollover_in = 0;  network_done = 0; network_calc = 0; data_ready = 1; 	end	
 			PIXEL_WAIT:	begin	input_rollover_in = 0;  neuron_rollover_in = 0;  network_done = 0; network_calc = 0; data_ready = 0;	end
 			LAYER1: 	begin	input_rollover_in = 36; neuron_rollover_in = 8;  network_done = 0; network_calc = 1; data_ready = 0; 	end
 			LAYER2: 	begin	input_rollover_in = 2;	neuron_rollover_in = 10; network_done = 0; network_calc = 1; data_ready = 0;	end	
 			ALERT_FINISH:	begin	input_rollover_in = 0; 	neuron_rollover_in = 0;  network_done = 1; network_calc = 0; data_ready = 0;	end			
+			WAIT_DIGIT:	begin	input_rollover_in = 0; 	neuron_rollover_in = 0;  network_done = 0; network_calc = 0; data_ready = 0;	end			
 		endcase
 	end
 
@@ -384,7 +401,7 @@ module networkController
 
 	if(topState == LAYER2) begin
 		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0; flashClear = 0;
-		inc_input   = layer2State == INC_INPUT;
+		inc_input   = layer2State == INC_INPUT || layer2State == INC_NEURON;
 		inc_neuron  = layer2State == INC_NEURON;
 		bias_en     = layer2State == GET_BIAS;
 		weight_en   = layer2State == LOAD_NEURON1;

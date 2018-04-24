@@ -33,6 +33,7 @@ module digit_recognizer_final (
 	wire data_ready, write_en;			// spi input
 	wire [7:0] SPI_in;				// spi input
 	wire shift_SPI, calculate_cost;			// spi input
+	wire sig_edge;
 	wire [0:9] expected_label;			// spi input
 	
 	wire calculation_complete;			// cost calculator
@@ -40,6 +41,7 @@ module digit_recognizer_final (
 
 	wire network_done;				// digit decode; spi output
 	wire network_calc;
+	wire digit_done;
 	wire [0:9][3:0] digit_weights;			// digit decode; sigmoid regs; cost calculator
 	wire [3:0] detected_digit;			// digit decode
 	
@@ -56,6 +58,7 @@ module digit_recognizer_final (
 		.flashData_out(flash_data),
 
        		.network_done(network_done),		// detected digit
+		.digit_done(digit_done),
        		.network_calc(network_calc),		// detected digit
         	.sigmoidData_in(sigmoidData_in),	// sigmoid registers
 		.sigmoidData_out(sigmoidData_out),
@@ -78,7 +81,8 @@ module digit_recognizer_final (
 		.SPI_in(SPI_in),
 		.write_en(write_en),
 		.calculate_cost(calculate_cost),
-		.expected_label(expected_label)
+		.expected_label(expected_label),
+		.sig_edge(sig_edge)
 	);
 	
 	SPI_output_controller 	top_spi_output (
@@ -86,11 +90,12 @@ module digit_recognizer_final (
 		.shift_SPI(shift_SPI), 
 		.SPI_in(SPI_in),
 		.SCK(SCK), .SS(SS),
-		.network_done(network_done),
+		.network_done(digit_done),
 		.data_ready(data_ready),
 		.cost_ready(calculation_complete),
 		.cost_output(cost_output),
 		.detected_digit(detected_digit),
+		.sig_edge(sig_edge),
 		.MISO(MISO)	// output
 	);
 	

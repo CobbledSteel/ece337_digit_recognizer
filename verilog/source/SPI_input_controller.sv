@@ -15,10 +15,11 @@ module SPI_input_controller (
 	output reg [7:0] SPI_in,
 	output reg write_en,
 	output reg calculate_cost,
-	output reg [9:0] expected_label
+	output reg [9:0] expected_label,
+	output reg sig_edge
 );
 	reg is_idle, delay1, delay2;
-	reg async_in, sync_out, sig, sig_edge;
+	reg async_in, sync_out, sig;
 	reg pixel_rollover, flag_long, flag;
 	reg [7:0] parallel_out;
 	reg [9:0] temp_label;
