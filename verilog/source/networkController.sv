@@ -365,7 +365,7 @@ module networkController
 
 	always_comb
 	begin: LAYER_OUT_LOGIC
-		input_en = 0; weight_en = 0; bias_en = 0;shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	inc_input = 0;	inc_neuron = 0;
+		input_en = 0; weight_en = 0; bias_en = 0;shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	inc_input = 0;	inc_neuron = 0; addr_en = 0;
 	if(topState == LAYER1) 	begin
 		input_en = 0;weight_en = 0;bias_en = 0;	shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
 		inc_input   = layer1State == INC_INPUT || layer1State == INC_NEURON;
@@ -400,7 +400,7 @@ module networkController
 		end
 
 	if(topState == LAYER2) begin
-		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0; flashClear = 0;
+		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0; flashClear = 0; addr_en = 0;
 		inc_input   = layer2State == INC_INPUT || layer2State == INC_NEURON;
 		inc_neuron  = layer2State == INC_NEURON;
 		bias_en     = layer2State == GET_BIAS;
