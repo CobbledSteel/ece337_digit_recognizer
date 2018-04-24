@@ -14,7 +14,7 @@ module networkController
 	output reg network_calc,
 	output reg digit_done,
 	output wire flash_ready,	// flash mem
-	output reg [15:0] flash_address,
+	output wire [15:0] flash_address,
 
 	output reg [3:0] sigmoidData_in, // sigmoid registers
 	output reg [4:0] sigmoid_address,
@@ -54,11 +54,13 @@ module networkController
 	reg inc_detect;
 
 	wire [7:0] detect_count;
+	wire [8:0] flash_address_lower;
 
 	assign sigmoidData_in = ALUOutput;
 	assign sigmoid_write_en = sig_write;
 	assign shift_network = shift;
 	assign flash_ready = ready;
+	assign flash_address = {7'b0,flash_address_lower};
 	typedef enum bit [4:0] {IDLE, PIXEL_WAIT, LAYER1, LAYER2, ALERT_FINISH, WAIT_DIGIT,
 				REQ_BIAS, WAIT_BIAS, REQ_WEIGHT, GET_BIAS, WAIT_WEIGHT, CHECK_DONE, LOAD_DATA, 
 				WAIT1, WAIT2,WAIT3, ACCU, SHIFT1, SHIFT2, INC_INPUT, 
@@ -85,12 +87,12 @@ module networkController
 		.count_out(flash_counter), 
 		.rollover_flag());
 
-	flex_counter #(.NUM_CNT_BITS(16)) flashAddressCounter(
+	flex_counter #(.NUM_CNT_BITS(9)) flashAddressCounter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(topState == IDLE), 
 		.count_enable(addr_en), 
 		.rollover_val('1), 
-		.count_out(flash_address), 
+		.count_out(flash_address_lower), 
 		.rollover_flag());
 
 	flex_counter #(.NUM_CNT_BITS(4)) neuronCounter(

@@ -28,6 +28,8 @@ integer num_correct;
 
 integer img_fptr;
 integer expected_val;
+integer option;
+
 reg [7:0] result;
 reg [0:3][3:0] temp;
 
@@ -92,44 +94,39 @@ endtask
 
 task write_shade(integer shade);
 begin
-	if(shade == 8)     $write("##");
-	else if(shade > 7) $write("##");
-	else if(shade > 4) $write("**");
-	else if(shade > 2) $write("..");
-	else 		   $write("  ");
-	//if(shade == 8)     $write("█");
-	//else if(shade > 7) $write("▓");
-	//else if(shade > 4) $write("▒");
-	//else if(shade > 2) $write("░");
-	//else 		   $write(" ");
+	case(shade)
+	8: $write("##");
+	7: $write("XX");
+	6: $write("xx");
+	5: $write("==");
+	4: $write("++");
+	3: $write("::");
+	2: $write("..");
+	1: $write("..");
+	0: $write("  ");
+	endcase
 end
 endtask
 
 task send_image();
 begin
 	$fscanf(img_fptr, "Expected digit: %d", expected_val);
-	$write("\n");
+	$write("+------------------------+");
 	for(j = 0; j < 36; j+=1)
 	begin
 		$fscanf(img_fptr, "%d %d %d %d", temp[0], temp[1], temp[2], temp[3]);
 		send_byte({temp[1],temp[0]});
 		send_byte({temp[3],temp[2]});
 
-		if(j % 3 == 0) $write("\n");
+		if(j % 3 == 0) $write("\n|");
 		write_shade(temp[0]);	
 		write_shade(temp[1]);	
 		write_shade(temp[2]);	
 		write_shade(temp[3]);	
-		
-		//send_byte({4'd2,4'd1});
-		//send_byte({4'd4,4'd3});
-		//send_byte({4'd2,4'd1});
-		//send_byte({4'd4,4'd3});
-		//send_byte({4'd6,4'd5});
-		//send_byte({4'd8,4'd7});
+		if(j%3 == 2) $write("|");
 	end
 	$fscanf(img_fptr, "%d %d %d %d", temp[0], temp[1], temp[2], temp[3]);
-	$write("\n");
+	$write("\n+------------------------+\n");
 end
 endtask
 
@@ -161,22 +158,36 @@ begin
 	tb_SCK_enable = 0;
 	num_tested = 0;
 	num_correct = 0;
+	option = 0;
 	img_fptr = $fopen("docs/images.txt", "r");
 	#7;
 	tb_n_rst = 1;
+	if(option == 0)
+	begin
 	for(m=0; m<100; m++)
-	begin	
-		send_byte(0);
-		send_image();
-		send_byte(255);
-		#30000;
-		get_byte();
-		$display("Testcase %d : Result is %d, expected digit is %d", m+1, result, expected_val);
-		num_tested += 1;
-		if(result == expected_val) num_correct += 1;
-		#10000;
+		begin	
+			send_byte(0);
+			send_image();
+			send_byte(255);
+			#30000;
+			get_byte();
+			$display("Test Case %5d", m+1);
+			$display("Result:   %1d", result);
+			$display("Expected: %1d", expected_val);
+			#50;
+			send_byte(1);
+			send_byte(expected_val);
+			#400
+			get_byte();
+			$info("Cost: %b\n", result);
+			$display("");
+			num_tested += 1;
+			if(result == expected_val) num_correct += 1;
+			#10000;
+		end
 	end
 	$info("Num tested:   %d,  Num correct: %d", num_tested, num_correct);
+	
 end
 
 endmodule
