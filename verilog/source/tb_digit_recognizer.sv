@@ -6,12 +6,12 @@
 // Version:     1.0  Initial Design Entry
 // Description: Top level testbench for digit recognizer
 
-`timescale 1ns / 10ps
+`timescale 1ns / 100ps
 
 module tb_digit_recognizer_final ();
 
 parameter CLK_PERIOD = 5;
-parameter SPI_PERIOD = 83;
+parameter SPI_PERIOD = 83; //83
 
 reg tb_clk, tb_n_rst;
 reg tb_SCK, tb_SS, tb_MOSI;
@@ -23,6 +23,8 @@ wire [15:0] tb_address;
 reg tb_SCK_enable;
 reg tb_test_SCK;
 integer i,j,k,m,n;
+integer num_tested;
+integer num_correct;
 
 integer img_fptr;
 integer expected_val;
@@ -82,6 +84,7 @@ begin
 		result = result >> 1;
 		result[7] = tb_MISO;
 	end
+	@(negedge tb_test_SCK);
 	tb_SCK_enable = 0;
 	tb_SS = 1;
 end
@@ -125,6 +128,7 @@ begin
 		//send_byte({4'd6,4'd5});
 		//send_byte({4'd8,4'd7});
 	end
+	$fscanf(img_fptr, "%d %d %d %d", temp[0], temp[1], temp[2], temp[3]);
 	$write("\n");
 end
 endtask
@@ -155,10 +159,12 @@ begin
 	tb_SCK = 0;
 	tb_SS = 1;
 	tb_SCK_enable = 0;
+	num_tested = 0;
+	num_correct = 0;
 	img_fptr = $fopen("docs/images.txt", "r");
 	#7;
 	tb_n_rst = 1;
-	for(m=0; m<1; m++)
+	for(m=0; m<100; m++)
 	begin	
 		send_byte(0);
 		send_image();
@@ -166,8 +172,11 @@ begin
 		#30000;
 		get_byte();
 		$display("Result is %d, expected digit is %d", result, expected_val);
+		num_tested += 1;
+		if(result == expected_val) num_correct += 1;
 		#10000;
 	end
+	$info("Num tested:   %d,  Num correct: %d", num_tested, num_correct);
 end
 
 endmodule

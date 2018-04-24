@@ -87,7 +87,7 @@ module networkController
 
 	flex_counter #(.NUM_CNT_BITS(16)) flashAddressCounter(
 		.clk(clk), .n_rst(n_rst), 
-		.clear(1'b0), 
+		.clear(topState == IDLE), 
 		.count_enable(addr_en), 
 		.rollover_val('1), 
 		.count_out(flash_address), 

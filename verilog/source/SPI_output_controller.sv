@@ -90,7 +90,7 @@ module SPI_output_controller (
 				next_state = dig_sent;
 				end
 			dig_sent : begin
-				if (flag_short == 1'b1)
+				if (shift_SPI == 1'b1)
 				next_state = idle;
 				end
 		endcase
