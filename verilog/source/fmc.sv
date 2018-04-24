@@ -81,7 +81,7 @@ module fmc (
 		ce = (state == idle);
 		oe = ce | (state == chip_en);
 	
-		count_en = ~(state == idle);
+		count_en =  (state == chip_en) | (state == output_en);
 		load_addr = (state == load);
 		load_data = (state == load);
 
