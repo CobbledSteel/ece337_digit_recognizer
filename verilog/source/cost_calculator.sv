@@ -36,8 +36,6 @@ module cost_calculator
   reg [3:0] mux_label;
   reg [3:0] mux_confidence;
   reg add_overflow;
-  reg next_first_pass;
-  reg first_pass_reg;
   reg adder_input_en;
   reg inc_index;
   reg fin_flag;
@@ -96,7 +94,6 @@ module cost_calculator
 	sq_reg <= '0;
 	add_reg <= '0;
 	sto_reg <= '0;
-	first_pass_reg <= '1;
       end else if (cost_en == 1 && state == IDLE) begin
 	label_hold_reg <= expected_label;
 	sigmoid_hold_reg <= digit_weights;
@@ -105,7 +102,6 @@ module cost_calculator
 	add_reg <= '0;
 	sto_reg <= '0;
         state <= next_state;
-	first_pass_reg <= next_first_pass;
       end else begin
         state <= next_state;
 	sub_reg <= next_sub_reg;
@@ -116,7 +112,6 @@ module cost_calculator
 	end else begin
 	  sto_reg <= sto_reg;
 	end
-	first_pass_reg <= next_first_pass;
       end
   end
 
