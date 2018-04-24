@@ -171,7 +171,7 @@ begin
 		send_byte(255);
 		#30000;
 		get_byte();
-		$display("Result is %d, expected digit is %d", result, expected_val);
+		$display("Testcase %d : Result is %d, expected digit is %d", m+1, result, expected_val);
 		num_tested += 1;
 		if(result == expected_val) num_correct += 1;
 		#10000;
