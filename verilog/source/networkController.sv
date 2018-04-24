@@ -351,11 +351,11 @@ module networkController
 		input_en = 0; weight_en = 0; bias_en = 0;shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	inc_input = 0;	inc_neuron = 0;
 	if(topState == LAYER1) 	begin
 		input_en = 0;weight_en = 0;bias_en = 0;	shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
-		inc_input   = layer1State == INC_INPUT;
+		inc_input   = layer1State == INC_INPUT || layer1State == INC_NEURON;
 		inc_neuron  = layer1State == INC_NEURON;
 		bias_en     = layer1State == GET_BIAS;
 		weight_en   = layer1State == LOAD_DATA;
-		addr_en     = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == LOAD_DATA);
+		addr_en     = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == CHECK_DONE);
 		clear       = layer1State == GET_BIAS ;
 		accumulate  = layer1State == ACCU;
 		sig_write   = layer1State == INC_NEURON;
