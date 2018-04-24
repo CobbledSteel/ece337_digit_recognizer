@@ -7,8 +7,11 @@
 // Description: External flash memory simulation
 
 module external_fm (
+	input wire oe,
+	input wire ce,
+	input wire we,
 	input wire [15:0] address,
-	output wire [15:0] data
+	output reg [15:0] data
 );
 	// hbias, hweights, 
 	reg [0:325] [15:0] data_array;
