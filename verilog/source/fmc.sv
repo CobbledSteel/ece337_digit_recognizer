@@ -64,9 +64,6 @@ module fmc (
 				end
 			output_en : begin
 				if (count_out == 4'd10)
-				next_state = data_valid;
-				end
-			data_valid : begin
 				next_state = load;
 				end
 			load : begin

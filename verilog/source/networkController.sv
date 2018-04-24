@@ -31,16 +31,20 @@ module networkController
 reg [5:0] input_rollover_in;
 reg [3:0] neuron_rollover_in;
 reg input_en;
+
+
 reg weight_en;
+reg weight_ld;
 reg bias_en;
+
 reg shift;
 assign shift_network = shift;
 reg sig_write;
 assign sigmoidData_in = ALUOutput;
 assign sigmoid_write_en = sig_write;
 reg ready;
-assign flash_ready = ready;
 wire [3:0] flash_counter;
+assign flash_ready =  (bias_en || weight_en ) && (flash_counter == 0);
 wire neuron_rollover;
 wire input_rollover;
 reg [3:0] nxt_weight1;
@@ -55,6 +59,8 @@ reg [3:0] nxt_input4;
 reg [3:0] neuronCountOut;
 reg [5:0] inputCountOut;
 reg flashClear;
+reg neuronClear;
+reg inputClear;
 reg inc_input;
 reg inc_neuron;
 
@@ -66,13 +72,13 @@ stateType nxt_layer1State;
 stateType layer2State;
 stateType nxt_layer2State;
 
-flex_counter #(.NUM_CNT_BITS(6)) inputCounter(.clk(clk), .n_rst(n_rst), .clear(1'b0), .count_enable(inc_input), .rollover_val(input_rollover_in), .count_out(inputCountOut), .rollover_flag(input_rollover));
+flex_counter #(.NUM_CNT_BITS(6)) inputCounter(.clk(clk), .n_rst(n_rst), .clear(inputClear), .count_enable(inc_input), .rollover_val(input_rollover_in), .count_out(inputCountOut), .rollover_flag(input_rollover));
 
 flex_counter #(.NUM_CNT_BITS(4)) flashCounter(.clk(clk), .n_rst(n_rst), .clear(flashClear), .count_enable(1'b1), .rollover_val(4'b1011), .count_out(flash_counter), .rollover_flag());
 
-flex_counter #(.NUM_CNT_BITS(16)) flashAddressCounter(.clk(clk), .n_rst(n_rst), .clear(1'b0), .count_enable(bias_en || weight_en), .rollover_val('1), .count_out(flash_address), .rollover_flag());
+flex_counter #(.NUM_CNT_BITS(16)) flashAddressCounter(.clk(clk), .n_rst(n_rst), .clear(1'b0), .count_enable((bias_en || weight_en ) && (flash_counter == 0)), .rollover_val('1), .count_out(flash_address), .rollover_flag());
 
-flex_counter #(.NUM_CNT_BITS(4)) neuronCounter(.clk(clk), .n_rst(n_rst), .clear(1'b0), .count_enable(inc_neuron), .rollover_val(neuron_rollover_in), .count_out(neuronCountOut), .rollover_flag(neuron_rollover));
+flex_counter #(.NUM_CNT_BITS(4)) neuronCounter(.clk(clk), .n_rst(n_rst), .clear(neuronClear), .count_enable(inc_neuron), .rollover_val(neuron_rollover_in), .count_out(neuronCountOut), .rollover_flag(neuron_rollover));
 
 
 always_ff@(posedge clk, negedge n_rst)
@@ -102,10 +108,10 @@ begin: nxt_weight_logic
 	
 	if(weight_en == 1)
 		begin
-		nxt_weight1 = flashData_out[3:0];
-		nxt_weight2 = flashData_out[7:4];
-		nxt_weight3 = flashData_out[11:8];
-		nxt_weight4 = flashData_out[15:12];
+		nxt_weight4 = flashData_out[3:0];
+		nxt_weight3 = flashData_out[7:4];
+		nxt_weight2 = flashData_out[11:8];
+		nxt_weight1 = flashData_out[15:12];
 		end
 end
 
@@ -249,7 +255,7 @@ begin: next_layer1State_logic
 			end
 		LOAD_DATA: nxt_layer1State = WAIT1;
 		WAIT1: nxt_layer1State = WAIT2;
-		WAIT2: nxt layer1State = ACCU;
+		WAIT2: nxt_layer1State = ACCU;
 		ACCU: nxt_layer1State = SHIFT1;
 		SHIFT1: nxt_layer1State = SHIFT2;
 		SHIFT2: nxt_layer1State = INC_INPUT;
@@ -258,7 +264,7 @@ begin: next_layer1State_logic
 			begin
 			if(input_rollover == 1)
 				nxt_layer1State = INC_NEURON;
-			else if(flash_counter == 10)
+			else if(flash_counter == 11)
 				nxt_layer1State = CHECK_DONE;
 			end
 		INC_NEURON: nxt_layer1State = LOAD_BIAS;
@@ -300,14 +306,14 @@ begin: next_layer2State_logic
 		LOAD_NEURON3: nxt_layer2State = LOAD_NEURON4;
 		LOAD_NEURON4: nxt_layer2State = WAIT1;
 		WAIT1: nxt_layer2State = WAIT2;
-		WAIT2: nxt layer2State = ACCU;
+		WAIT2: nxt_layer2State = ACCU;
 		ACCU: nxt_layer2State = INC_INPUT;
 		INC_INPUT: nxt_layer2State = CHECK_INPUT;
 		CHECK_INPUT:
 			begin
 			if(input_rollover == 1)
 				nxt_layer2State = INC_NEURON;
-			else if(flash_counter == 10)
+			else if(flash_counter == 11)
 				nxt_layer2State = CHECK_DONE;
 			end
 		INC_NEURON: nxt_layer2State = LOAD_BIAS;
@@ -380,6 +386,8 @@ begin: LAYER_OUT_LOGIC
 	clear = 0;
 	sigmoid_address = 0;
 	flashClear = 1;
+	neuronClear = 0;
+	inputClear = 0;
 	inc_input = 0;
 	inc_neuron = 0;
 	if(topState == LAYER1)
@@ -398,7 +406,7 @@ begin: LAYER_OUT_LOGIC
 			begin
 			input_en = 0;
 			weight_en = 0;
-			bias_en = 1;
+			bias_en = 0;
 			shift = 0;
 			sig_write = 0;
 			ready = 1;
@@ -423,7 +431,7 @@ begin: LAYER_OUT_LOGIC
 		CHECK_DONE:
 			begin
 			input_en = 0;
-			weight_en = 0;
+			weight_en = 1;
 			bias_en = 0;
 			shift = 0;
 			sig_write = 0;
@@ -440,7 +448,7 @@ begin: LAYER_OUT_LOGIC
 			bias_en = 0;
 			shift = 0;
 			sig_write = 0;
-			ready = 1;
+			ready = 0;
 			accumulate = 0;
 			clear = 0;
 			sigmoid_address = neuronCountOut;
@@ -562,6 +570,8 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			neuronClear = 1;
+			inputClear = 1;
 			sigmoid_address = neuronCountOut;
 			end
 		
@@ -583,11 +593,12 @@ begin: LAYER_OUT_LOGIC
 			begin
 			input_en = 0;
 			weight_en = 0;
-			bias_en = 1;
+			bias_en = 0;
 			sig_write = 0;
 			ready = 1;
 			accumulate = 0;
 			clear = 1;
+			flashClear = 0;
 			end
 		LOAD_WEIGHT:
 			begin
@@ -598,16 +609,18 @@ begin: LAYER_OUT_LOGIC
 			ready = 1;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 0;
 			end
 		CHECK_DONE:
 			begin
 			input_en = 0;
-			weight_en = 0;
+			weight_en = 1;
 			bias_en = 0;
 			sig_write = 0;
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 0;
 			end
 		LOAD_NEURON1:
 			begin
@@ -619,6 +632,7 @@ begin: LAYER_OUT_LOGIC
 			accumulate = 0;
 			clear = 0;
 			sigmoid_address = 0 + (inputCountOut) * 4;
+			flashClear = 0;
 			end
 		LOAD_NEURON2:
 			begin
@@ -630,6 +644,7 @@ begin: LAYER_OUT_LOGIC
 			accumulate = 0;
 			clear = 0;
 			sigmoid_address = 1 + (inputCountOut) * 4;
+			flashClear = 0;
 			end
 		LOAD_NEURON3:
 			begin
@@ -641,6 +656,7 @@ begin: LAYER_OUT_LOGIC
 			accumulate = 0;
 			clear = 0;
 			sigmoid_address = 2 + (inputCountOut) * 4;
+			flashClear = 0;
 			end
 		LOAD_NEURON4:
 			begin
@@ -652,6 +668,7 @@ begin: LAYER_OUT_LOGIC
 			accumulate = 0;
 			clear = 0;
 			sigmoid_address = 3 + (inputCountOut) * 4;
+			flashClear = 0;
 			end
 		WAIT1:
 			begin
@@ -662,6 +679,7 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 0;
 			end
 		WAIT2:
 			begin
@@ -672,6 +690,7 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 0;
 			end
 		ACCU:
 			begin
@@ -682,6 +701,7 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 1;
 			clear = 0;
+			flashClear = 0;
 			end
 		SHIFT1:
 			begin
@@ -693,6 +713,7 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 0;
 			end
 		INC_INPUT:
 			begin
@@ -703,6 +724,8 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 0;
+			inc_input = 1;
 			end
 		CHECK_INPUT:
 			begin
@@ -713,6 +736,7 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 0;
 			end
 		INC_NEURON:
 			begin
@@ -724,6 +748,8 @@ begin: LAYER_OUT_LOGIC
 			accumulate = 0;
 			clear = 0;
 			sigmoid_address = 8 + neuronCountOut;
+			inc_neuron = 1;
+			flashClear = 1;
 			end
 		LAYER_DONE:
 			begin
@@ -734,6 +760,9 @@ begin: LAYER_OUT_LOGIC
 			ready = 0;
 			accumulate = 0;
 			clear = 0;
+			flashClear = 1;
+			neuronClear = 1;
+			inputClear = 1;
 			end
 		
 		endcase

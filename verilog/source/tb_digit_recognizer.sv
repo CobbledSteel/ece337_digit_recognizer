@@ -74,8 +74,11 @@ begin
 	for(j = 0; j < 36; j++)
 	begin
 		$fscanf(img_fptr, "%d %d %d %d", temp[0], temp[1], temp[2], temp[3]);
-		send_byte({temp[1],temp[0]});
-		send_byte({temp[3],temp[2]});
+		//send_byte({temp[1],temp[0]});
+		//send_byte({temp[3],temp[2]});
+		
+		send_byte({4'd2,4'd1});
+		send_byte({4'd4,4'd3});
 	end
 end
 endtask
@@ -111,7 +114,8 @@ begin
 	tb_n_rst = 1;
 	send_byte(0);
 	send_image();
-	#10000;
+	send_byte(255);
+	#30000;
 	send_byte(255);
 end
 

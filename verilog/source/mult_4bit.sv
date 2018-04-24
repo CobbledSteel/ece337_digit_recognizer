@@ -16,3 +16,4 @@ module mult_4bit
 assign product = $unsigned(a) * $unsigned(b);
 
 endmodule
+

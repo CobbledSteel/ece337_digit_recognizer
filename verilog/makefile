@@ -16,12 +16,12 @@ include /home/ecegrid/a/ece337/Course_Prod/course_make_vars
 # (do not include the source folder in the name)
 # NOTE: YOU WILL NEED TO SET THIS VARIABLE'S VALUE WHEN WORKING WITH HEIRARCHICAL DESIGNS
 # AND THE AUTOMATED GRADING SYSTEM
-COMPONENT_FILES	:= 
+COMPONENT_FILES	:= abs_subtractor_4bit.sv adder_1bit.sv adder_8bit.sv adder_nbit.sv cost_calculator.sv digit_decode.sv flex_counter.sv fmc.sv gen_pos_edge_detect.sv gen_pts_sr.sv gen_stp_sr.sv gen_sync.sv mult_4bit.sv networkController.sv pixelData_PTPSR.sv pixelData.sv sigmoid_ALU.sv sigmoidRegisters_addressableReg.sv sigmoidRegisters.sv SPI_input_controller.sv SPI_output_controller.sv comparator.sv
 
 # Specify the name of the top level file (do not include the source folder in the name)
 # NOTE: YOU WILL NEED TO SET THIS VARIABLE'S VALUE WHEN WORKING WITH HEIRARCHICAL DESIGNS
 # AND THE AUTOMATED GRADING SYSTEM
-TOP_LEVEL_FILE	:= 
+TOP_LEVEL_FILE	:= digit_recognizer.sv
 
 # Specify the filepath of the test bench you want to use (ie. tb_top_level.sv)
 # (do not include the source folder in the name)
@@ -29,7 +29,7 @@ TEST_BENCH	:= tb_$(TOP_LEVEL_FILE)
 
 # Fill in the names of any test bench helper code files (code files referenced by your testbenches
 # other than the actual design files)( do not include the 'source/')
-TB_HELPER_FILES	:= 
+TB_HELPER_FILES	:= external_fm.sv
 
 # Get the top level design and test_bench module names
 TB_MODULE		:= $(notdir $(basename $(TEST_BENCH)))
@@ -216,11 +216,11 @@ sim_full_source: $(addprefix $(S_WORK_LIB)/, $(notdir $(basename $(TOP_LEVEL_FIL
 
 # Uncomment below if you want run the simulation the normal way and have it
 # run the specified .do file
-#	@$(SIMULATE) -t ps -do s_waves.do $(S_WORK_LIB).$(TB_MODULE)
+	@$(SIMULATE) -t ps -do wave.do $(S_WORK_LIB).$(TB_MODULE)
 
 # This way just runs it like normal and only sets up the simulation but doesn't
 # run it or add any waveforms
-	@$(SIMULATE) -i -t ps $(S_WORK_LIB).$(TB_MODULE)
+#	@$(SIMULATE) -i -t ps $(S_WORK_LIB).$(TB_MODULE)
 	@cp -f transcript $(basename $(TOP_LEVEL_FILE)).stran
 	@echo -e "Done simulating the source design\n\n"
 
@@ -336,6 +336,26 @@ uniquify
 # Step 2: Set design constraints
 # Uncomment below to set timing, area, power, etc. constraints
 # set_max_delay <delay> -from "<input>" -to "<output>"
+
+ set_max_delay 2 -from "top_sigmoid_ALU/M1/signval" -to "top_sigmoid_ALU/M1/out"
+ set_max_delay 2 -from "top_sigmoid_ALU/M2/signval" -to "top_sigmoid_ALU/M2/out"
+ set_max_delay 2 -from "top_sigmoid_ALU/M3/signval" -to "top_sigmoid_ALU/M3/out"
+ set_max_delay 2 -from "top_sigmoid_ALU/M4/signval" -to "top_sigmoid_ALU/M4/out"
+ 
+ set_max_delay 2 -from "top_sigmoid_ALU/M1/unsignval" -to "top_sigmoid_ALU/M1/out"
+ set_max_delay 2 -from "top_sigmoid_ALU/M2/unsignval" -to "top_sigmoid_ALU/M2/out"
+ set_max_delay 2 -from "top_sigmoid_ALU/M3/unsignval" -to "top_sigmoid_ALU/M3/out"
+ set_max_delay 2 -from "top_sigmoid_ALU/M4/unsignval" -to "top_sigmoid_ALU/M4/out"
+ 
+ 
+ 
+ set_max_delay 3 -from "top_sigmoid_ALU/ADDER/in1" -to "top_sigmoid_ALU/ADDER/out"
+ set_max_delay 3 -from "top_sigmoid_ALU/ADDER/in2" -to "top_sigmoid_ALU/ADDER/out"
+ set_max_delay 3 -from "top_sigmoid_ALU/ADDER/in3" -to "top_sigmoid_ALU/ADDER/out"
+ set_max_delay 3 -from "top_sigmoid_ALU/ADDER/in4" -to "top_sigmoid_ALU/ADDER/out"
+ 
+ set_max_delay 3 -from "top_sigmoid_ALU/ACCUM/newval" -to "top_sigmoid_ALU/ACCUM/out"
+ set_max_delay 4 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
 # set_max_area <area>
 # set_max_total_power <power> mW
 $(if $(and $(CLOCK_NAME), $(CLOCK_PERIOD)), create_clock "$(CLOCK_NAME)" -name "$(CLOCK_NAME)" -period $(CLOCK_PERIOD))
@@ -344,7 +364,7 @@ $(if $(and $(CLOCK_NAME), $(CLOCK_PERIOD)), create_clock "$(CLOCK_NAME)" -name "
 compile -map_effort medium
 
 # Step 4: Output reports
-report_timing -path full -delay max -max_paths 1 -nworst 1 > reports/$(MOD_NAME).rep
+report_timing -path full -delay max -max_paths 10 -nworst 10 > reports/$(MOD_NAME).rep
 report_area >> reports/$(MOD_NAME).rep
 report_power -hier >> reports/$(MOD_NAME).rep
 
