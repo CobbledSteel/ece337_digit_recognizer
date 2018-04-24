@@ -164,7 +164,6 @@ module cost_calculator
     inc_index = 1'b0;   
     case (state)
       IDLE: begin
-	calculation_complete = 1'b1;
       end
 
       SUB: begin
@@ -185,6 +184,7 @@ module cost_calculator
       end
 
       FIN: begin
+	calculation_complete = 1'b1;
       end
     endcase
   end
