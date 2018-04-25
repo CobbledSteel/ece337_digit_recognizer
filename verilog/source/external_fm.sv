@@ -14,7 +14,7 @@ module external_fm (
 	output reg [15:0] data
 );
 	// hbias, hweights, 
-	reg [0:325] [15:0] data_array;
+	reg [0:330] [15:0] data_array; // 326 + 5 = 331
 	reg [3:0] num1, num2, num3, num4;
 	integer i,j,k;
 	integer fh_biases, fh_weights, fo_biases, fo_weights;
@@ -48,7 +48,13 @@ module external_fm (
 			k += 1;
 		end
 	end
-	
+
+	data_array[k++] = '0;
+	data_array[k++] = '0;
+	data_array[k++] = '0;
+	data_array[k++] = '0;
+	data_array[k++] = '0;
+
 	$fclose(fh_biases);
 	$fclose(fh_weights);
 	$fclose(fo_biases);

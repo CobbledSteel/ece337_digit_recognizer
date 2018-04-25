@@ -73,7 +73,7 @@ module SPI_output_controller (
 			idle : begin
 				if (network_done == 1'b1)
 				next_state = load_dig;
-				else if (SPI_in == 2'b01)
+				else if (data_ready && SPI_in == 8'b00000001)
 				next_state = wait_cost;
 				end
 			wait_cost : begin
@@ -95,6 +95,7 @@ module SPI_output_controller (
 				end
 		endcase
 	end
+	
 
 	always_comb
 	begin 

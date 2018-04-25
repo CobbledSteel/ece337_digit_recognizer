@@ -22,10 +22,11 @@ module SPI_input_controller (
 	reg async_in, sync_out, sig;
 	reg pixel_rollover, flag_long, flag;
 	reg [7:0] parallel_out;
-	reg [9:0] temp_label;
+	reg [0:9] temp_label;
 	wire [6:0] pixel_count;
+	reg nxt_calculate_cost;
 	
-	typedef enum logic [2:0] {idle, load_pix, done_pix, load_exp, done_exp} state_type;
+	typedef enum logic [2:0] {idle, load_pix, done_pix, load_exp, done_exp, delay_exp} state_type;
 	state_type state;
 	state_type next_state;
 		
@@ -88,9 +89,9 @@ module SPI_input_controller (
 		next_state = state;
 		case(state)
 			idle : begin
-				if (data_ready & (SPI_in == 0))
+				if (data_ready & (SPI_in == 8'b00000000))
 				next_state = load_pix;
-				else if (data_ready & (SPI_in == 1))
+				else if (data_ready & (SPI_in == 8'b00000001))
 				next_state = load_exp;
 				end
 			load_pix : begin
@@ -105,9 +106,18 @@ module SPI_input_controller (
 				next_state = done_exp;
 				end
 			done_exp : begin
-				next_state = idle;
+				next_state = delay_exp;
+				end
+			delay_exp: begin
+				if (delay1 == 1'b1) next_state = idle;
 				end
 		endcase
+	end
+
+	always_ff @ (negedge n_rst, posedge clk)
+	begin
+		if (n_rst == 0) calculate_cost = 0;
+		else calculate_cost = nxt_calculate_cost;
 	end
 
 	always_comb
@@ -117,7 +127,7 @@ module SPI_input_controller (
 
 		// output logic
 		is_idle = (state == idle);
-		calculate_cost = (state == done_exp);
+		nxt_calculate_cost = (state == done_exp);
 		write_en = (state == load_pix);
 
 		// input gates
