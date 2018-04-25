@@ -356,12 +356,15 @@ uniquify
  
  set_max_delay 3 -from "top_sigmoid_ALU/ACCUM/newval" -to "top_sigmoid_ALU/ACCUM/out"
  set_max_delay 3 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
+
+ # set_max_delay 3 -from "top_digit_decode/count_out" -to "top_digit_decode/digit_val"
+
 # set_max_area <area>
 # set_max_total_power <power> mW
 $(if $(and $(CLOCK_NAME), $(CLOCK_PERIOD)), create_clock "$(CLOCK_NAME)" -name "$(CLOCK_NAME)" -period $(CLOCK_PERIOD))
 
 # Step 3: Compile the design
-compile -map_effort medium
+compile -map_effort high
 
 # Step 4: Output reports
 report_timing -path full -delay max -max_paths 10 -nworst 10 > reports/$(MOD_NAME).rep
