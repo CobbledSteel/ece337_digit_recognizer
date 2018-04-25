@@ -14,7 +14,7 @@ module networkController
 	output reg network_calc,
 	output reg digit_done,
 	output wire flash_ready,	// flash mem
-	output wire [15:0] flash_address,
+	output reg [15:0] flash_address,
 
 	output reg [3:0] sigmoidData_in, // sigmoid registers
 	output reg [4:0] sigmoid_address,
@@ -54,13 +54,11 @@ module networkController
 	reg inc_detect;
 
 	wire [7:0] detect_count;
-	wire [8:0] flash_address_lower;
 
 	assign sigmoidData_in = ALUOutput;
 	assign sigmoid_write_en = sig_write;
 	assign shift_network = shift;
 	assign flash_ready = ready;
-	assign flash_address = {7'b0,flash_address_lower};
 	typedef enum bit [4:0] {IDLE, PIXEL_WAIT, LAYER1, LAYER2, ALERT_FINISH, WAIT_DIGIT,
 				REQ_BIAS, WAIT_BIAS, REQ_WEIGHT, GET_BIAS, WAIT_WEIGHT, CHECK_DONE, LOAD_DATA, 
 				WAIT1, WAIT2,WAIT3, ACCU, SHIFT1, SHIFT2, INC_INPUT, 
@@ -87,12 +85,12 @@ module networkController
 		.count_out(flash_counter), 
 		.rollover_flag());
 
-	flex_counter #(.NUM_CNT_BITS(9)) flashAddressCounter(
+	flex_counter #(.NUM_CNT_BITS(16)) flashAddressCounter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(topState == IDLE), 
 		.count_enable(addr_en), 
 		.rollover_val('1), 
-		.count_out(flash_address_lower), 
+		.count_out(flash_address), 
 		.rollover_flag());
 
 	flex_counter #(.NUM_CNT_BITS(4)) neuronCounter(
@@ -367,7 +365,9 @@ module networkController
 
 	always_comb
 	begin: LAYER_OUT_LOGIC
-		input_en = 0; weight_en = 0; bias_en = 0;shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	inc_input = 0;	inc_neuron = 0; addr_en = 0;
+		input_en = 0; weight_en = 0; bias_en = 0;shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	
+		inc_input = 0;	inc_neuron = 0; addr_en = 0; neuronClear = 0; inputClear = 0;
+
 	if(topState == LAYER1) 	begin
 		input_en = 0;weight_en = 0;bias_en = 0;	shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
 		inc_input   = layer1State == INC_INPUT || layer1State == INC_NEURON;
@@ -402,7 +402,7 @@ module networkController
 		end
 
 	if(topState == LAYER2) begin
-		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0; flashClear = 0; addr_en = 0;
+		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0; flashClear = 0; addr_en = 0; neuronClear = 0; inputClear = 0;
 		inc_input   = layer2State == INC_INPUT || layer2State == INC_NEURON;
 		inc_neuron  = layer2State == INC_NEURON;
 		bias_en     = layer2State == GET_BIAS;
