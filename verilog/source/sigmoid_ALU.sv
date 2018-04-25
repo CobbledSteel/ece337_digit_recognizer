@@ -20,7 +20,7 @@ module sigmoid_ALU
 	input wire [3:0] bias,
 	input wire accumulate,
 	input wire clear,
-	output wire [3:0] out,
+	output reg [3:0] out,
 	output wire [15:0] accum_out
 );
 
@@ -32,22 +32,59 @@ wire [7:0] mult4;
 wire [9:0] added_nxt;
 reg  [9:0] added_reg;
 
+reg [3:0] weight1_reg;
+reg [3:0] weight2_reg;
+reg [3:0] weight3_reg;
+reg [3:0] weight4_reg;
 
-sigmoid_ALU_multiplier M1 (.signval(weight1), .unsignval(input1), .out(mult1));
-sigmoid_ALU_multiplier M2 (.signval(weight2), .unsignval(input2), .out(mult2));
-sigmoid_ALU_multiplier M3 (.signval(weight3), .unsignval(input3), .out(mult3));
-sigmoid_ALU_multiplier M4 (.signval(weight4), .unsignval(input4), .out(mult4));
+reg [3:0] input1_reg;
+reg [3:0] input2_reg;
+reg [3:0] input3_reg;
+reg [3:0] input4_reg;
 
-sigmoid_ALU_4_way_adder ADDER (.in1(mult1), .in2(mult2), .in3(mult3), .in4(mult4), .out(added_nxt));
+reg [7:0] mult1_reg;
+reg [7:0] mult2_reg;
+reg [7:0] mult3_reg;
+reg [7:0] mult4_reg;
+
+reg [3:0] bias_reg;
+wire [3:0] out_nxt;
+
+
+sigmoid_ALU_multiplier M1 (.signval(weight1_reg), .unsignval(input1_reg), .out(mult1));
+sigmoid_ALU_multiplier M2 (.signval(weight2_reg), .unsignval(input2_reg), .out(mult2));
+sigmoid_ALU_multiplier M3 (.signval(weight3_reg), .unsignval(input3_reg), .out(mult3));
+sigmoid_ALU_multiplier M4 (.signval(weight4_reg), .unsignval(input4_reg), .out(mult4));
+
+sigmoid_ALU_4_way_adder ADDER (.in1(mult1_reg), .in2(mult2_reg), .in3(mult3_reg), .in4(mult4_reg), .out(added_nxt));
 
 sigmoid_ALU_accumulator ACCUM (.clk(clk), .clear(clear), .accumulate(accumulate), .newval(added_reg), .out(accum_out));
 
-sigmoid_ALU_sigmoid_calculator SIGM (.accum(accum_out[15:2]), .bias(bias), .sigma(out));
+sigmoid_ALU_sigmoid_calculator SIGM (.accum(accum_out[15:2]), .bias(bias_reg), .sigma(out_nxt));
 
 always_ff @ (posedge clk)
 begin
 	added_reg = added_nxt;
+
+	weight1_reg = weight1;
+	weight2_reg = weight2;
+	weight3_reg = weight3;
+	weight4_reg = weight4;
+
+	input1_reg = input1;
+	input2_reg = input2;
+	input3_reg = input3;
+	input4_reg = input4;
+
+	bias_reg = bias;
+	out = out_nxt;
+
+	mult1_reg = mult1;
+	mult2_reg = mult2;
+	mult3_reg = mult3;
+	mult4_reg = mult4;
 end
+
 
 
 
