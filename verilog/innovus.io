@@ -12,6 +12,28 @@ Orient: R270
 Pad: c1 NE PADFC
 
 Orient: R0
+Pad: DUM30 N PADNC
+Orient: R0
+Pad: DUM37 N PADNC
+Orient: R0
+Pad: DUM38 N PADNC
+Orient: R0
+Pad: DUM23 N PADNC
+Orient: R0
+Pad: DUM22 N PADNC
+Orient: R0
+Pad: DUM21 N PADNC
+Orient: R0
+Pad: DUM20 N PADNC
+Orient: R0
+Pad: DUM27 N PADNC
+Orient: R0
+Pad: DUM28 N PADNC
+Orient: R0
+Pad: DUM44 N PADNC
+Orient: R0
+Pad: DUM19 N PADNC
+Orient: R0
 Pad: U4 N
 Orient: R0
 Pad: U5 N
@@ -39,6 +61,24 @@ Pad: U31 N
 Orient: R0
 Pad: c2 NW PADFC
 
+Orient: R90
+Pad: DUM31 W PADNC
+Orient: R90
+Pad: DUM18 W PADNC
+Orient: R90
+Pad: DUM17 W PADNC
+Orient: R90
+Pad: DUM16 W PADNC
+Orient: R90
+Pad: DUM15 W PADNC
+Orient: R90
+Pad: DUM36 W PADNC
+Orient: R90
+Pad: DUM39 W PADNC
+Orient: R90
+Pad: DUM43 W PADNC
+Orient: R90
+Pad: DUM14 W PADNC
 Orient: R90
 Pad: U18 W
 Orient: R90
@@ -76,6 +116,20 @@ Pad: P2 S PADVDD
 Orient: R180
 Pad: G2 S PADGND
 Orient: R180
+Pad: DUM10 S PADNC
+Orient: R180
+Pad: DUM11 S PADNC
+Orient: R180
+Pad: DUM40 S PADNC
+Orient: R180
+Pad: DUM42 S PADNC
+Orient: R180
+Pad: DUM32 S PADNC
+Orient: R180
+Pad: DUM12 S PADNC
+Orient: R180
+Pad: DUM13 S PADNC
+Orient: R180
 Pad: DUM1 S PADNC
 Orient: R180
 Pad: U41 S
@@ -94,6 +148,14 @@ Pad: U23 S
 Orient: R180
 Pad: DUM4 S PADNC
 Orient: R180
+Pad: DUM25 S PADNC
+Orient: R180
+Pad: DUM26 S PADNC
+Orient: R180
+Pad: DUM29 S PADNC
+Orient: R180
+Pad: DUM35 S PADNC
+Orient: R180
 Pad: U1 S
 
 Orient: R180
@@ -101,6 +163,24 @@ Pad: c4 SE PADFC
 
 Orient: R270
 Pad: DUM5 E PADNC
+Orient: R270
+Pad: DUM41 E PADNC
+Orient: R270
+Pad: DUM45 E PADNC
+Orient: R270
+Pad: DUM6 E PADNC
+Orient: R270
+Pad: DUM34 E PADNC
+Orient: R270
+Pad: DUM33 E PADNC
+Orient: R270
+Pad: DUM7 E PADNC
+Orient: R270
+Pad: DUM8 E PADNC
+Orient: R270
+Pad: DUM9 E PADNC
+Orient: R270
+Pad: DUM24 E PADNC
 Orient: R270
 Pad: P1 E PADVDD
 Orient: R270
