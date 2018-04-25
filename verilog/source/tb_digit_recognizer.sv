@@ -205,7 +205,7 @@ begin
 			#25000;
 			get_byte();
 			digit = result;	
-			$display("Test Case %5d", m+1);
+			$info("Test Case %5d", m+1);
 			$display("Result:   %1d", digit);
 			$display("Expected: %1d", expected_val);
 
@@ -225,7 +225,7 @@ begin
 			#30000;
 			get_byte();
 			digit = result;	
-			$display("Test Case %5d", m+1);
+			$info("Test Case %5d", m+1);
 			$display("Result Digit:   %1d", digit);
 			$display("Expected Digit: %1d", expected_val);
 
@@ -249,26 +249,26 @@ begin
 	end
 	else if (option == 2)
 	begin
-			$display("Test empty request after reset");
+			$info("Test empty request after reset");
 			get_byte();
 			if(result != 0) $error("Invalid initial digit");
 			send_byte(0);
 			send_image();
 			send_byte(255);
 			get_byte();
-			$display("Test early digit request");
+			$info("Test early digit request");
 			get_byte();
 			if(result != 255) $error("No error code received");
-			$display("Test early cost request");
+			$info("Test early cost request");
 			send_byte(1);
 			send_byte(expected_val);
 			get_byte();
 			if(result != 255) $error("No error code received");
-			$display("Test digit value after early requests");
+			$info("Test digit value after early requests");
 			#30000;
 			get_byte();
 			if(result != expected_val) $error("Valid data not given");
-			$display("Test cost value after early requests");
+			$info("Test cost value after early requests");
 			#500;
 			send_byte(1);
 			send_byte(expected_val);
