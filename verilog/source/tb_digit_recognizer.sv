@@ -6,12 +6,12 @@
 // Version:     1.0  Initial Design Entry
 // Description: Top level testbench for digit recognizer
 
-`timescale 1ns / 10ps
+`timescale 1ns / 100ps
 
 module tb_digit_recognizer_final ();
 
 parameter CLK_PERIOD = 5;
-parameter SPI_PERIOD = 83;
+parameter SPI_PERIOD = 83; //83
 
 reg tb_clk, tb_n_rst;
 reg tb_SCK, tb_SS, tb_MOSI;
@@ -23,9 +23,12 @@ wire [15:0] tb_address;
 reg tb_SCK_enable;
 reg tb_test_SCK;
 integer i,j,k,m,n;
+integer num_tested;
+integer num_correct;
 
 integer img_fptr;
 integer expected_val;
+reg [7:0] result;
 reg [0:3][3:0] temp;
 
 digit_recognizer_final DUT 
@@ -68,18 +71,65 @@ begin
 end
 endtask
 
+task get_byte();
+begin
+	result = 0;
+		tb_MOSI = 1;
+	@(negedge tb_test_SCK);
+	tb_SS = 0;
+	tb_SCK_enable = 1;
+	for(i=0; i < 8; i++)
+	begin
+		@(posedge tb_test_SCK);
+		result = result >> 1;
+		result[7] = tb_MISO;
+	end
+	@(negedge tb_test_SCK);
+	tb_SCK_enable = 0;
+	tb_SS = 1;
+end
+endtask
+
+task write_shade(integer shade);
+begin
+	if(shade == 8)     $write("##");
+	else if(shade > 7) $write("##");
+	else if(shade > 4) $write("**");
+	else if(shade > 2) $write("..");
+	else 		   $write("  ");
+	//if(shade == 8)     $write("█");
+	//else if(shade > 7) $write("▓");
+	//else if(shade > 4) $write("▒");
+	//else if(shade > 2) $write("░");
+	//else 		   $write(" ");
+end
+endtask
+
 task send_image();
 begin
 	$fscanf(img_fptr, "Expected digit: %d", expected_val);
-	for(j = 0; j < 36; j++)
+	$write("\n");
+	for(j = 0; j < 36; j+=1)
 	begin
 		$fscanf(img_fptr, "%d %d %d %d", temp[0], temp[1], temp[2], temp[3]);
-		//send_byte({temp[1],temp[0]});
-		//send_byte({temp[3],temp[2]});
+		send_byte({temp[1],temp[0]});
+		send_byte({temp[3],temp[2]});
+
+		if(j % 3 == 0) $write("\n");
+		write_shade(temp[0]);	
+		write_shade(temp[1]);	
+		write_shade(temp[2]);	
+		write_shade(temp[3]);	
 		
-		send_byte({4'd2,4'd1});
-		send_byte({4'd4,4'd3});
+		//send_byte({4'd2,4'd1});
+		//send_byte({4'd4,4'd3});
+		//send_byte({4'd2,4'd1});
+		//send_byte({4'd4,4'd3});
+		//send_byte({4'd6,4'd5});
+		//send_byte({4'd8,4'd7});
 	end
+	$fscanf(img_fptr, "%d %d %d %d", temp[0], temp[1], temp[2], temp[3]);
+	$write("\n");
 end
 endtask
 
@@ -109,14 +159,24 @@ begin
 	tb_SCK = 0;
 	tb_SS = 1;
 	tb_SCK_enable = 0;
+	num_tested = 0;
+	num_correct = 0;
 	img_fptr = $fopen("docs/images.txt", "r");
-	#5;
+	#7;
 	tb_n_rst = 1;
-	send_byte(0);
-	send_image();
-	send_byte(255);
-	#30000;
-	send_byte(255);
+	for(m=0; m<100; m++)
+	begin	
+		send_byte(0);
+		send_image();
+		send_byte(255);
+		#30000;
+		get_byte();
+		$display("Testcase %d : Result is %d, expected digit is %d", m+1, result, expected_val);
+		num_tested += 1;
+		if(result == expected_val) num_correct += 1;
+		#10000;
+	end
+	$info("Num tested:   %d,  Num correct: %d", num_tested, num_correct);
 end
 
 endmodule

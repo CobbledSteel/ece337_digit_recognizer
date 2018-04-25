@@ -17,7 +17,7 @@ module fmc (
 	output reg ce, oe, we
 );
 	
-	reg clear_cnt, count_en, load_addr, load_data;
+	reg clear_cnt, count_en, load_data;
 	reg [3:0] count_out;
 
 	flex_counter #(4) fmc_counter(
@@ -43,7 +43,7 @@ module fmc (
 		end
 		else begin
 			state <= next_state;
-			if (load_addr == 1'b1)
+			if (ready == 1'b1)
 				address_in <= address;
 			if (load_data == 1'b1)
 				data_out <= data;
@@ -82,9 +82,7 @@ module fmc (
 		oe = ce | (state == chip_en);
 	
 		count_en =  (state == chip_en) | (state == output_en);
-		load_addr = (state == load);
 		load_data = (state == load);
-
 		clear_cnt = (state == idle) | (state == load);
 	end		
 endmodule 
