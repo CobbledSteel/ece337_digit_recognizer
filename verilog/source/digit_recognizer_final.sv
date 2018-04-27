@@ -866,7 +866,7 @@ module networkController
 	input [15:0] flashData_out,
 	
 	output reg data_ready,		// spi i/o
-	output wire shift_network,	// pixel data regs
+	output reg shift_network,	// pixel data regs
 	output reg network_done,	// digit detect; spi output
 	output reg network_calc,
 	output reg digit_done,
@@ -889,7 +889,6 @@ module networkController
 	reg weight_en;
 	reg addr_en;
 	reg bias_en;
-	reg shift;
 	
 	reg sig_write;
 	reg ready;
@@ -910,11 +909,12 @@ module networkController
 	reg inc_neuron;
 	reg inc_detect;
 
+	reg shift_nxt;
+
 	wire [7:0] detect_count;
 
 	assign sigmoidData_in = ALUOutput;
 	assign sigmoid_write_en = sig_write;
-	assign shift_network = shift;
 	assign flash_ready = ready;
 	typedef enum bit [4:0] {IDLE, PIXEL_WAIT, LAYER1, LAYER2, ALERT_FINISH, WAIT_DIGIT,
 				REQ_BIAS, WAIT_BIAS, REQ_WEIGHT, GET_BIAS, WAIT_WEIGHT, CHECK_DONE, LOAD_DATA, 
@@ -965,6 +965,16 @@ module networkController
 		.rollover_val(8'd255), 
 		.count_out(detect_count), 
 		.rollover_flag(digit_done));
+
+	always_ff @(posedge clk, negedge n_rst)
+	begin : output_registers
+		if (n_rst == 0) begin
+			shift_network = 0;	
+		end
+		else begin
+			shift_network = shift_nxt;
+		end
+	end
 
 
 	always_ff@(posedge clk, negedge n_rst)
@@ -1222,11 +1232,11 @@ module networkController
 
 	always_comb
 	begin: LAYER_OUT_LOGIC
-		input_en = 0; weight_en = 0; bias_en = 0;shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	
+		input_en = 0; weight_en = 0; bias_en = 0;shift_nxt = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;flashClear = 1;	
 		inc_input = 0;	inc_neuron = 0; addr_en = 0; neuronClear = 0; inputClear = 0;
 
 	if(topState == LAYER1) 	begin
-		input_en = 0;weight_en = 0;bias_en = 0;	shift = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
+		input_en = 0;weight_en = 0;bias_en = 0;	shift_nxt = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address = 0;
 		inc_input   = layer1State == INC_INPUT || layer1State == INC_NEURON;
 		inc_neuron  = layer1State == INC_NEURON;
 		bias_en     = layer1State == GET_BIAS;
@@ -1238,23 +1248,23 @@ module networkController
 		inputClear  = layer1State == LAYER_DONE;
 		neuronClear = layer1State == LAYER_DONE;
 		case(layer1State)
-			REQ_BIAS:    begin input_en = 0; shift = 0; ready = 1; sigmoid_address = neuronCountOut; flashClear = 0; end
-			WAIT_BIAS:   begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			REQ_WEIGHT:  begin input_en = 0; shift = 0; ready = 1; sigmoid_address = neuronCountOut; flashClear = 0; end
-			GET_BIAS:    begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			WAIT_WEIGHT: begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			CHECK_DONE:  begin input_en = 0; shift = 0; ready = 1; sigmoid_address = neuronCountOut; flashClear = 0; end
-			LOAD_DATA:   begin input_en = 1; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			WAIT1:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			WAIT2:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end	
-			WAIT3:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end	
-			ACCU:	     begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			SHIFT1:	     begin input_en = 0; shift = 1; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			SHIFT2:	     begin input_en = 0; shift = 1; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			INC_INPUT:   begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			CHECK_INPUT: begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			INC_NEURON:  begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
-			LAYER_DONE:  begin input_en = 0; shift = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			REQ_BIAS:    begin input_en = 0; shift_nxt = 0; ready = 1; sigmoid_address = neuronCountOut; flashClear = 0; end
+			WAIT_BIAS:   begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			REQ_WEIGHT:  begin input_en = 0; shift_nxt = 0; ready = 1; sigmoid_address = neuronCountOut; flashClear = 0; end
+			GET_BIAS:    begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			WAIT_WEIGHT: begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			CHECK_DONE:  begin input_en = 0; shift_nxt = 0; ready = 1; sigmoid_address = neuronCountOut; flashClear = 0; end
+			LOAD_DATA:   begin input_en = 1; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			WAIT1:	     begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			WAIT2:	     begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end	
+			WAIT3:	     begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end	
+			ACCU:	     begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			SHIFT1:	     begin input_en = 0; shift_nxt = 1; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			SHIFT2:	     begin input_en = 0; shift_nxt = 1; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			INC_INPUT:   begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			CHECK_INPUT: begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			INC_NEURON:  begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
+			LAYER_DONE:  begin input_en = 0; shift_nxt = 0; ready = 0; sigmoid_address = neuronCountOut; flashClear = 0; end
 		endcase
 		end
 

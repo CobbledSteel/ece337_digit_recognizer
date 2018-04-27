@@ -17,3 +17,12 @@ cat $top $components > source/$(basename ${top} .sv)_final.sv
 cat source/tb_$(basename $top .sv).sv $helper > source/tb_$(basename ${top} .sv)_final.sv
 
 make tbsim_$(basename $top .sv)_final_$1
+
+
+/home/ecegrid/a/ece337/Course_Prod/Scripts/User_Scripts/pads $(basename $top .sv)_final
+
+head -n -67  mapped/$(basename $top .sv)_final.v > mapped/$(basename $top .sv)_final_tmp.v
+
+cat mapped/$(basename $top .sv)_final_tmp.v padsend.txt > mapped/$(basename $top .sv)_final.v
+
+
