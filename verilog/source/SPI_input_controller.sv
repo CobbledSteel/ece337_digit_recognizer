@@ -52,7 +52,7 @@ module SPI_input_controller (
 		.clk(clk), .n_rst(n_rst), 
 		.shift_enable(sig_edge),
 		.serial_in(sync_out),
-		.parallel_out(parallel_out)
+	.parallel_out(parallel_out)
 	);
 	
 	gen_sync 	     spi_input_sync	(.clk(clk), .n_rst(n_rst), .async_in(async_in), .sync_out(sync_out));

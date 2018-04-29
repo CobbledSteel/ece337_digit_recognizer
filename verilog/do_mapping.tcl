@@ -26,17 +26,17 @@ uniquify
  set_max_delay 3 -from "top_sigmoid_ALU/ACCUM/newval" -to "top_sigmoid_ALU/ACCUM/out"
  set_max_delay 3 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
 
- # set_max_delay 3 -from "top_digit_decode/count_out" -to "top_digit_decode/digit_val"
+  set_max_delay 2.9 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/next_digit"
 
 # set_max_area <area>
 # set_max_total_power <power> mW
- create_clock "clk" -name "clk" -period 4.5
+ create_clock "clk" -name "clk" -period 4.0
 
 # Step 3: Compile the design
 compile -map_effort high
 
 # Step 4: Output reports
-report_timing -path full -delay max -max_paths 10 -nworst 10 > reports/digit_recognizer_final.rep
+report_timing -path full -delay max -max_paths 200 -nworst 200 > reports/digit_recognizer_final.rep
 report_area >> reports/digit_recognizer_final.rep
 report_power -hier >> reports/digit_recognizer_final.rep
 

@@ -12,7 +12,8 @@ module digit_decode
   input wire n_rst,
   input wire network_done,
   input wire [0:9][3:0] digit_weights,
-  output wire [3:0] detected_digit
+  output wire [3:0] detected_digit,
+  output reg [3:0] next_digit
 );
 
   wire [3:0] count_out;
@@ -22,7 +23,6 @@ module digit_decode
   reg [3:0] digit_val = 4'b0000;
   reg [3:0] max_val = 4'b000;
   reg [3:0] in_val;
-  reg [3:0] next_digit;
   reg [0:9][3:0] weight_hold;
 
   assign detected_digit = digit_val;

@@ -269,7 +269,7 @@ tbsim_%_mapped: $(M_WORK_LIB)/% $(M_WORK_LIB)/tb_%
 # Set the default value of the clock name and clock period to an empty string so that clock timing will
 # only be activated in the SYN_CMDS definition if they were overwritten at invocation
 CLOCK_NAME 		:= clk
-CLOCK_PERIOD	:= 4.5
+CLOCK_PERIOD	:= 4.0
 
 # Set the default value of the source files for sub modules to be an empty string so that
 # it will only be used if overwritten at invocation
@@ -357,7 +357,7 @@ uniquify
  set_max_delay 3 -from "top_sigmoid_ALU/ACCUM/newval" -to "top_sigmoid_ALU/ACCUM/out"
  set_max_delay 3 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
 
- # set_max_delay 3 -from "top_digit_decode/count_out" -to "top_digit_decode/digit_val"
+  set_max_delay 2.9 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/next_digit"
 
 # set_max_area <area>
 # set_max_total_power <power> mW
@@ -367,7 +367,7 @@ $(if $(and $(CLOCK_NAME), $(CLOCK_PERIOD)), create_clock "$(CLOCK_NAME)" -name "
 compile -map_effort high
 
 # Step 4: Output reports
-report_timing -path full -delay max -max_paths 10 -nworst 10 > reports/$(MOD_NAME).rep
+report_timing -path full -delay max -max_paths 200 -nworst 200 > reports/$(MOD_NAME).rep
 report_area >> reports/$(MOD_NAME).rep
 report_power -hier >> reports/$(MOD_NAME).rep
 

@@ -16,7 +16,7 @@ addRing -spacing_bottom 9.9 -width_left 9.9 -width_bottom 9.9 -width_top 9.9 -sp
 
 # Place standard cells
 
-setPlaceMode -congEffort medium 
+setPlaceMode -congEffort high
 placeDesign -inPlaceOpt
 checkPlace
 
