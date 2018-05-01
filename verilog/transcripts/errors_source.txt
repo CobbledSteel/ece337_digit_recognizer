@@ -1,0 +1,110 @@
+# //  Questa Sim-64
+# //  Version 10.3b linux_x86_64 May 29 2014
+# //
+# //  Copyright 1991-2014 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# vsim -Lf /home/ecegrid/a/ece337/Course_Prod/IP_Libs/Lab_IP_Lib/Vsim -L /home/ecegrid/a/ece337/Course_Prod/Cell_Libs/AMI_05/vhdl_work -L /home/ecegrid/a/ece337/Class0.5u/GOLD_LIB "+no_glitch_msg" -coverage -voptargs="+acc" -i -t ps source_work/.tb_digit_recognizer_final 
+# ** Warning: (vsim-3201) Problem loading Tcl init file: ./init.tcl.
+# Start time: 18:26:58 on May 01,2018
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Note: (vopt-143) Recognized 3 FSMs in module "networkController(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "SPI_input_controller(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "SPI_output_controller(fast)".
+# ** Warning: source/digit_recognizer_final.sv(142): (vopt-2685) [TFMPC] - Too few port connections for 'top_cost_calculator'.  Expected 8, found 7.
+# ** Warning: source/digit_recognizer_final.sv(142): (vopt-2718) [TFMPC] - Missing connection for port 'next_sub_reg'.
+# ** Warning: source/digit_recognizer_final.sv(151): (vopt-2685) [TFMPC] - Too few port connections for 'top_digit_decode'.  Expected 7, found 5.
+# ** Warning: source/digit_recognizer_final.sv(151): (vopt-2718) [TFMPC] - Missing connection for port 'next_digit'.
+# ** Warning: source/digit_recognizer_final.sv(151): (vopt-2718) [TFMPC] - Missing connection for port 'mux_out'.
+# ** Note: (vopt-143) Recognized 1 FSM in module "fmc(fast)".
+# Loading sv_std.std
+# Loading work.tb_digit_recognizer_final(fast)
+# Loading work.digit_recognizer_final(fast)
+# Loading work.networkController(fast)
+# Loading work.flex_counter(fast)
+# Loading work.flex_counter(fast__1)
+# Loading work.flex_counter(fast__2)
+# Loading work.flex_counter(fast__3)
+# Loading work.SPI_input_controller(fast)
+# Loading work.flex_counter(fast__4)
+# Loading work.gen_stp_sr(fast)
+# Loading work.gen_sync(fast)
+# Loading work.gen_pos_edge_detect(fast)
+# Loading work.SPI_output_controller(fast)
+# Loading work.gen_pts_sr(fast)
+# Loading work.pixelData(fast)
+# Loading work.pixelData_PTPSR(fast)
+# Loading work.sigmoidRegisters(fast)
+# Loading work.sigmoidRegisters_addressableReg(fast)
+# Loading work.fmc(fast)
+# Loading work.sigmoid_ALU(fast)
+# Loading work.sigmoid_ALU_multiplier(fast)
+# Loading work.sigmoid_ALU_4_way_adder(fast)
+# Loading work.sigmoid_ALU_accumulator(fast)
+# Loading work.sigmoid_ALU_sigmoid_calculator(fast)
+# Loading work.cost_calculator(fast)
+# Loading work.abs_subtractor_4bit(fast)
+# Loading work.comparator(fast)
+# Loading work.mult_4bit(fast)
+# Loading work.adder_8bit(fast)
+# Loading work.adder_nbit(fast)
+# Loading work.adder_1bit(fast)
+# Loading work.digit_decode(fast)
+# Loading work.external_fm(fast)
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(316): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(319): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(327): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(331): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(134): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/send_image
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(141): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/send_image
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(154): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/send_image
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(237): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final
+do wave_source.do
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 1 times, errno 11
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 2 times, errno 11
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 3 times, errno 11
+# ** Error: Cannot lock WLF file: "vsim.wlf"
+#           errno 11: Resource temporarily unavailable.
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: mg81  Hostname: ecegrid-thin7.ecn.purdue.edu  ProcessID: 10657
+#           Attempting to use alternate WLF file "./wlftPlQmwE".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlftPlQmwE
+force option 2
+run 200us
+# ** Info: Test empty request after reset
+#    Time: 7 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 252
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |    ..XXxx++++++++      |
+# |          ......##..    |
+# |              ..xx      |
+# |              ##        |
+# |            ::xx        |
+# |          ..XX          |
+# |          xx..          |
+# |        ..##..          |
+# |        ::::            |
+# +------------------------+
+# ** Info: Test early digit request
+#    Time: 50879 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 259
+# ** Info: Test early cost request
+#    Time: 51626 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 262
+# ** Info: Test digit value after early requests
+#    Time: 53867 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 267
+# ** Info: Test cost value after early requests
+#    Time: 84577 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 271

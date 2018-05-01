@@ -1,0 +1,1889 @@
+# //  Questa Sim-64
+# //  Version 10.3b linux_x86_64 May 29 2014
+# //
+# //  Copyright 1991-2014 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# vsim -Lf /home/ecegrid/a/ece337/Course_Prod/IP_Libs/Lab_IP_Lib/Vsim -L /home/ecegrid/a/ece337/Course_Prod/Cell_Libs/AMI_05/vhdl_work -L /home/ecegrid/a/ece337/Class0.5u/GOLD_LIB "+no_glitch_msg" -coverage -voptargs="+acc" -i -t ps source_work/.tb_digit_recognizer_final 
+# ** Warning: (vsim-3201) Problem loading Tcl init file: ./init.tcl.
+# Start time: 18:02:38 on May 01,2018
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Note: (vopt-143) Recognized 3 FSMs in module "networkController(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "SPI_input_controller(fast)".
+# ** Note: (vopt-143) Recognized 1 FSM in module "SPI_output_controller(fast)".
+# ** Warning: source/digit_recognizer_final.sv(142): (vopt-2685) [TFMPC] - Too few port connections for 'top_cost_calculator'.  Expected 8, found 7.
+# ** Warning: source/digit_recognizer_final.sv(142): (vopt-2718) [TFMPC] - Missing connection for port 'next_sub_reg'.
+# ** Warning: source/digit_recognizer_final.sv(151): (vopt-2685) [TFMPC] - Too few port connections for 'top_digit_decode'.  Expected 7, found 5.
+# ** Warning: source/digit_recognizer_final.sv(151): (vopt-2718) [TFMPC] - Missing connection for port 'next_digit'.
+# ** Warning: source/digit_recognizer_final.sv(151): (vopt-2718) [TFMPC] - Missing connection for port 'mux_out'.
+# ** Note: (vopt-143) Recognized 1 FSM in module "fmc(fast)".
+# Loading sv_std.std
+# Loading work.tb_digit_recognizer_final(fast)
+# Loading work.digit_recognizer_final(fast)
+# Loading work.networkController(fast)
+# Loading work.flex_counter(fast)
+# Loading work.flex_counter(fast__1)
+# Loading work.flex_counter(fast__2)
+# Loading work.flex_counter(fast__3)
+# Loading work.SPI_input_controller(fast)
+# Loading work.flex_counter(fast__4)
+# Loading work.gen_stp_sr(fast)
+# Loading work.gen_sync(fast)
+# Loading work.gen_pos_edge_detect(fast)
+# Loading work.SPI_output_controller(fast)
+# Loading work.gen_pts_sr(fast)
+# Loading work.pixelData(fast)
+# Loading work.pixelData_PTPSR(fast)
+# Loading work.sigmoidRegisters(fast)
+# Loading work.sigmoidRegisters_addressableReg(fast)
+# Loading work.fmc(fast)
+# Loading work.sigmoid_ALU(fast)
+# Loading work.sigmoid_ALU_multiplier(fast)
+# Loading work.sigmoid_ALU_4_way_adder(fast)
+# Loading work.sigmoid_ALU_accumulator(fast)
+# Loading work.sigmoid_ALU_sigmoid_calculator(fast)
+# Loading work.cost_calculator(fast)
+# Loading work.abs_subtractor_4bit(fast)
+# Loading work.comparator(fast)
+# Loading work.mult_4bit(fast)
+# Loading work.adder_8bit(fast)
+# Loading work.adder_nbit(fast)
+# Loading work.adder_1bit(fast)
+# Loading work.digit_decode(fast)
+# Loading work.external_fm(fast)
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(316): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(319): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(327): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(331): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/FLASH
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(134): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/send_image
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(141): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/send_image
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(154): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final/send_image
+# ** Warning: (vsim-PLI-3691) source/tb_digit_recognizer_final.sv(237): Expected a system task, not a system function '$fscanf'.
+#         Region: /tb_digit_recognizer_final
+# Causality operation skipped due to absence of debug database file
+do wave_source.do
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 1 times, errno 11
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 2 times, errno 11
+# ** Error: Unable to lock WLF file "vsim.wlf". Retrying 3 times, errno 11
+# ** Error: Cannot lock WLF file: "vsim.wlf"
+#           errno 11: Resource temporarily unavailable.
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: mg81  Hostname: ecegrid-thin7.ecn.purdue.edu  ProcessID: 7084
+#           Attempting to use alternate WLF file "./wlftYCPsPy".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlftYCPsPy
+force test_count 100
+run 10ms
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |    ..XXxx++++++++      |
+# |          ......##..    |
+# |              ..xx      |
+# |              ##        |
+# |            ::xx        |
+# |          ..XX          |
+# |          xx..          |
+# |        ..##..          |
+# |        ::::            |
+# +------------------------+
+# ** Info: Test Case     1
+#    Time: 75115 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |        ++xxxx          |
+# |      ++XX++xx++        |
+# |      ..    XX..        |
+# |          ++XX          |
+# |          ##..          |
+# |        XX==            |
+# |      ::##              |
+# |      ==##::::..::==xx..|
+# |      ..====##xx==::..  |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     2
+#    Time: 160190 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   2
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |              ##        |
+# |            ..::        |
+# |            xx          |
+# |            XX          |
+# |          ..==          |
+# |          ==..          |
+# |          ##..          |
+# |          XX            |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     3
+#    Time: 245265 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |          ++##          |
+# |        xx####xx..      |
+# |      ..####::++xx      |
+# |      xxXX      ##::    |
+# |      xx        ##++    |
+# |      XX      ####..    |
+# |      XX++######==      |
+# |      ::######..        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     4
+#    Time: 330340 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |                        |
+# |        ..      ::      |
+# |        XX      ==      |
+# |      ++..      ##      |
+# |      XX      ..==      |
+# |      xx      XX::      |
+# |      ++####XX##        |
+# |              ##..      |
+# |              ##        |
+# |              ..        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     5
+#    Time: 415415 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |              ##        |
+# |            ::##        |
+# |            XXxx        |
+# |          ..##          |
+# |          ::XX          |
+# |          xx++          |
+# |          ##..          |
+# |          XX            |
+# |          ++            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     6
+#    Time: 500490 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |        XX        ++    |
+# |      ==..      ::::    |
+# |    ..XX        XX      |
+# |    ..##xx++==##::      |
+# |      ..::....XX        |
+# |            xx..        |
+# |            XX          |
+# |          ..xx++        |
+# |          ..==          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     7
+#    Time: 585565 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |          ..            |
+# |        xx##..          |
+# |      ..##xx##..        |
+# |      ..::  XX==        |
+# |      ..XXxx++##        |
+# |        ..::  ==::      |
+# |                XX      |
+# |                ::::    |
+# |                  XX    |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     8
+#    Time: 670640 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |          ..++XX######  |
+# |        ..++##==::....  |
+# |      XX                |
+# |    ==::                |
+# |    ##XX::......        |
+# |    ..XX########::      |
+# |          ##++##::      |
+# |          ++##==        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case     9
+#    Time: 755715 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 5
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |          ++xxXX==..    |
+# |      ::##==  xxXX##    |
+# |    ..##......==##==    |
+# |      ::XXxx####==      |
+# |          ..##::        |
+# |          ##xx          |
+# |        ==##..          |
+# |        ##::            |
+# |        ==              |
+# +------------------------+
+# ** Info: Test Case    10
+#    Time: 840790 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |        xxXXXXXXxx      |
+# |      ..##..    xx++    |
+# |      ++::      ..XX    |
+# |      XX        ..XX    |
+# |      xx        ..XX    |
+# |    ..XX        ++++    |
+# |      XX      ..XX      |
+# |      xxXXXX####..      |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    11
+#    Time: 925865 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |          XX            |
+# |        ##..            |
+# |        XX              |
+# |      ==::    XX##==    |
+# |      XX  ::XX::  XX    |
+# |      XX  XX..    xx    |
+# |      XX  XX..  ..++    |
+# |      xx....::xx==      |
+# |        ==XXxx..        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    12
+#    Time: 1010940 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |          xx##XX==..    |
+# |        XX++  ..XX      |
+# |      ++XX    XX::      |
+# |      ++##++xx##        |
+# |        ..::::XX        |
+# |            xx..        |
+# |          ..##          |
+# |          ..==          |
+# |          ....          |
+# +------------------------+
+# ** Info: Test Case    13
+#    Time: 1096015 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |          ::XXxx..      |
+# |        xx##::##==      |
+# |      ..##..    ##..    |
+# |      ==XX      ==..    |
+# |      XX..      ==++    |
+# |      XX        ==++    |
+# |      ++xx      XX      |
+# |        XX....xx++      |
+# |          ::==..        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    14
+#    Time: 1181090 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |                        |
+# |          ..##          |
+# |          ::##          |
+# |          ::##          |
+# |          ::##          |
+# |          ::##          |
+# |          ::##          |
+# |          ::##          |
+# |          ##==          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    15
+#    Time: 1266165 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |      ::XXXXxx..        |
+# |      ..XX              |
+# |        ##....          |
+# |      ==++..==XX..      |
+# |                ++::    |
+# |                  ==    |
+# |      ..          xx    |
+# |      xx==::==xxxx..    |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    16
+#    Time: 1351240 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   5
+# Expected: 5
+# +------------------------+
+# |                        |
+# |                        |
+# |          ....          |
+# |        XX++::==..      |
+# |      xx      ..XX      |
+# |      XX      ++xx      |
+# |      ##    ..##..      |
+# |      ..##XX::##        |
+# |            ..##        |
+# |            xx++        |
+# |            XX          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    17
+#    Time: 1436315 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |    ####XXxxxx....      |
+# |            ++####      |
+# |                ##..    |
+# |              ::XX      |
+# |              ##..      |
+# |            XXxx        |
+# |          ++XX          |
+# |          ##..          |
+# |        ..::            |
+# +------------------------+
+# ** Info: Test Case    18
+#    Time: 1521390 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |    ::####..            |
+# |    xx::..##==          |
+# |    XX    ..##::        |
+# |    ::..######XX..      |
+# |        ..::::::##==    |
+# |      ..##        ##..  |
+# |        XX::    ..XX==  |
+# |          ==######xx    |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    19
+#    Time: 1606465 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   2
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |                ..      |
+# |        ++    ....      |
+# |        ##    xx        |
+# |      ..::    ##        |
+# |      ==xxxxxx##..      |
+# |            ..xx..      |
+# |            ....        |
+# |            ::::        |
+# |            ..          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    20
+#    Time: 1691540 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |              ..        |
+# |          ..XX##xx..    |
+# |        ==##::####..    |
+# |      ::##xxXX##++      |
+# |      ..++..::##        |
+# |            XX          |
+# |          ====          |
+# |        ..##..          |
+# |        ##==            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    21
+#    Time: 1776615 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |          ::##          |
+# |          XX..          |
+# |        ++++            |
+# |        ##..            |
+# |        ##..::..        |
+# |        ##xx::xx==      |
+# |        ##      xx      |
+# |        ::++..XX==      |
+# |          ++XX..        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    22
+#    Time: 1861690 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |        ##              |
+# |      ..::              |
+# |      ==                |
+# |      XX    ..####..    |
+# |      XX    xx....::    |
+# |      xx  ..xx  ..::    |
+# |      ..##++::  XX      |
+# |        ..xx##xx        |
+# |            XX++        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    23
+#    Time: 1946765 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |            ..xxXXXX..  |
+# |          XX::..  ..    |
+# |        ..==            |
+# |        xx..            |
+# |        ##xxxx..        |
+# |              xx::      |
+# |            ::XX        |
+# |      ..==XX==          |
+# |      ++::              |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    24
+#    Time: 2031840 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   5
+# Expected: 5
+# +------------------------+
+# |                        |
+# |                        |
+# |        ....            |
+# |        xx    ++        |
+# |      ..++    ##        |
+# |      xx    ..++        |
+# |      XX..    xx..      |
+# |          ..::##        |
+# |              ==        |
+# |              ##        |
+# |              ::        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    25
+#    Time: 2116915 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |        ..  ####XX..    |
+# |      ..##::xx####xx    |
+# |    ..####xx  ..::##    |
+# |    xx####..    ..##..  |
+# |    ####..    ..xx##..  |
+# |    ####..::XX####++    |
+# |    ++##########==      |
+# |      xx####XX..        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    26
+#    Time: 2201990 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |          ++====        |
+# |    ==xxxx    ##..      |
+# |    ++        xx::      |
+# |              ::::      |
+# |              xx..      |
+# |              XX        |
+# |              XX        |
+# |            ::..        |
+# |            xx          |
+# +------------------------+
+# ** Info: Test Case    27
+#    Time: 2287065 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |          xx    ..      |
+# |        ..xx    XX      |
+# |        ##..    xx      |
+# |      xx==    ..==      |
+# |      ####xx++xx++      |
+# |          ::::##        |
+# |              ##        |
+# |            ..##        |
+# |              ::        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    28
+#    Time: 2372140 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |        ######==..      |
+# |        ..##XX##xx      |
+# |        ++==  xx##      |
+# |        ##      ##..    |
+# |      ++++      ##..    |
+# |      ==::      ##..    |
+# |      ==XX......xx      |
+# |      ..########..      |
+# |        ..xx..          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    29
+#    Time: 2457215 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |                        |
+# |          XX            |
+# |          ==..          |
+# |          XX::          |
+# |          xx::          |
+# |          ..XX          |
+# |          ..XX          |
+# |          ..##          |
+# |          ..##          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    30
+#    Time: 2542290 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |      ..::::..          |
+# |      XXxxXX##++        |
+# |          ..##          |
+# |        ..##xx..        |
+# |          ..==##::      |
+# |              xxxx      |
+# |            ==XX        |
+# |        ++XX==          |
+# |      ::##..            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    31
+#    Time: 2627365 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |          xx..          |
+# |          ==..          |
+# |          ::++          |
+# |          ..XX          |
+# |            XX          |
+# |            xx          |
+# |            xx          |
+# |            ==          |
+# |            ..::        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    32
+#    Time: 2712440 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |      ++####::          |
+# |      xx....##          |
+# |          ..xx          |
+# |        ==##==          |
+# |      ..XX++xxXX..      |
+# |              xxxx      |
+# |                ##..    |
+# |          ..==##xx      |
+# |        xx##==          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    33
+#    Time: 2797515 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |        ==..        ..  |
+# |        xx..      ..XX  |
+# |        ##..      ++    |
+# |      ++##        XX    |
+# |      ##..        ##    |
+# |    xxXX==##XX##..xx    |
+# |    ::==++....  xx..    |
+# |                        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    34
+#    Time: 2882590 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |      ..      ......    |
+# |      ::##########==    |
+# |              ..XX      |
+# |              ##xx      |
+# |            xx##        |
+# |          ==##::        |
+# |        ..##::          |
+# |      ..##xx            |
+# |      xx##..            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    35
+#    Time: 2967665 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |        ::##xx==XX::    |
+# |      ==xx..    ..==    |
+# |    ..==        ..::    |
+# |                XX..    |
+# |              XX::      |
+# |            XX..        |
+# |    ..XX######++..++    |
+# |    ####==....====..    |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    36
+#    Time: 3052740 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   2
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |    ..XXxxXX##XX++      |
+# |    ##==        ==      |
+# |  ::..        xx::      |
+# |            ..##        |
+# |            ==          |
+# |          ++##XX==      |
+# |          ..XX          |
+# |          ..==          |
+# |            ..          |
+# +------------------------+
+# ** Info: Test Case    37
+#    Time: 3137815 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |          XX..          |
+# |          xx::          |
+# |          ==xx          |
+# |          ::XX          |
+# |          ..##          |
+# |          ..##          |
+# |          ..##          |
+# |          ..##          |
+# |            xx          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    38
+#    Time: 3222890 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |        ..XX##          |
+# |      ::==..xx          |
+# |            xx          |
+# |          ....          |
+# |          xx            |
+# |        ..::    ..XX    |
+# |        XX..::XX++      |
+# |      ++xxXX::          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    39
+#    Time: 3307965 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |            ##..        |
+# |          ..##==        |
+# |          ::##          |
+# |          XX##          |
+# |          ##XX          |
+# |          ##..          |
+# |          XXXX          |
+# |          XXXX          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    40
+#    Time: 3393040 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |          ....          |
+# |          ..::          |
+# |            ++          |
+# |            ==          |
+# |          ..++          |
+# |          ....          |
+# |          ....          |
+# |          ::..          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    41
+#    Time: 3478115 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |        ++XX##xx        |
+# |      ##..    ##        |
+# |              ##        |
+# |            ..++        |
+# |            ####==      |
+# |            xx..++      |
+# |          ++..          |
+# |          ==            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    42
+#    Time: 3563190 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |      ....    ....      |
+# |      ++++    ++==      |
+# |      xx..    ##++      |
+# |      XX    XX##        |
+# |      ++++xx####        |
+# |        ::::xx==        |
+# |            XX          |
+# |            XX          |
+# |            XX          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    43
+#    Time: 3648265 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |            ++xx        |
+# |            ..xx        |
+# |            ==          |
+# |          ..==          |
+# |          xx......::    |
+# |      ..####++      xx  |
+# |    XXXX..              |
+# |    ..                  |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    44
+#    Time: 3733340 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   2
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |      ..XX##..          |
+# |      ..  ::::          |
+# |          ++::          |
+# |          ##==          |
+# |          ..xxXX        |
+# |              ##..      |
+# |          ::##==        |
+# |        ++##::          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    45
+#    Time: 3818415 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   5
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |          xx==++::      |
+# |          xx  ......    |
+# |          xx            |
+# |        ..##xx++        |
+# |        ##..  ==..      |
+# |              ++..      |
+# |      ++      ##..      |
+# |      ++..::XX::        |
+# |        ++::            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    46
+#    Time: 3903490 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   5
+# Expected: 5
+# +------------------------+
+# |                        |
+# |                        |
+# |        XXxx            |
+# |        ::##..          |
+# |          ##XX          |
+# |          ++##          |
+# |          ..##::        |
+# |            XX##        |
+# |            ==##..      |
+# |            ..##::      |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    47
+#    Time: 3988565 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |        ::::==          |
+# |            ....        |
+# |              ##        |
+# |              XX        |
+# |              ##        |
+# |        xxxx..++        |
+# |      ==    xx..        |
+# |      ==..==..==::      |
+# |        ..      ....    |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    48
+#    Time: 4073640 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   2
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |        ....    ..      |
+# |      ..##==  XX##..    |
+# |      xx##..  ####      |
+# |    ..####==####XX      |
+# |    ..##########++      |
+# |      ..    ++##..      |
+# |            ==##++      |
+# |          ..####..      |
+# |            ####        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    49
+#    Time: 4158715 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |      xx      ....      |
+# |      ##      ..++      |
+# |      ##      ..xx      |
+# |      ##      ++xx++    |
+# |      XX::..++XXxx      |
+# |      ..####==##++      |
+# |              xx++      |
+# |              ##..      |
+# |                ..      |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    50
+#    Time: 4243790 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |              ==..      |
+# |            ++XX        |
+# |          ..XX          |
+# |          ++..          |
+# |        ::==            |
+# |        ##..++##++      |
+# |        ##    ##++      |
+# |        ##++..##..      |
+# |        ..==XX::        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    51
+#    Time: 4328865 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |    ..........          |
+# |    ##########XX        |
+# |            xx##        |
+# |      ..==######::      |
+# |      XX##++::++##XX    |
+# |                  ##    |
+# |      ..xx......==XX    |
+# |        ==XX####xx..    |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    52
+#    Time: 4413940 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |                ....++  |
+# |          ====XX==..    |
+# |        xx##::          |
+# |      ..XX              |
+# |      xxxxxxXX==        |
+# |      ::      ++++      |
+# |              XX::      |
+# |      ....==XX::        |
+# |      ....              |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    53
+#    Time: 4499015 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   5
+# Expected: 5
+# +------------------------+
+# |                        |
+# |                        |
+# |        ..::++          |
+# |      ==....            |
+# |      xx                |
+# |      xx::xxxxxx::      |
+# |      ....      ::..    |
+# |                ..++    |
+# |                ....    |
+# |        xx....==++      |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    54
+#    Time: 4584090 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   5
+# Expected: 5
+# +------------------------+
+# |                        |
+# |        xx              |
+# |      ==XX              |
+# |    ..##                |
+# |    ::##      ......    |
+# |    ::XX  ..##++::==XX  |
+# |    ::XX  ..##      ##  |
+# |    ..##::  xxxx    ##  |
+# |      ++##::..++XXxx..  |
+# |        ..++====..      |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    55
+#    Time: 4669165 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |          ::XX==        |
+# |        ..##::xx::      |
+# |        ==##..  XX      |
+# |        ##==    ##      |
+# |        ##++    ##      |
+# |        ##      XX      |
+# |        ##    ..==      |
+# |        ##++xxXX        |
+# |          ##++          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    56
+#    Time: 4754240 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |                        |
+# |      ::==      ....    |
+# |      xxxx      ====    |
+# |      XX++      ##::    |
+# |      XX..    ..##      |
+# |    ..##XXXXxxXXXX      |
+# |      ==......XX==      |
+# |              ##..      |
+# |            ..##..      |
+# |              ##        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    57
+#    Time: 4839315 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |            ..++        |
+# |            ==++        |
+# |            xx          |
+# |            ##          |
+# |          ..++          |
+# |          ==..          |
+# |          XX            |
+# |          XX            |
+# |          ==            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    58
+#    Time: 4924390 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |          ++XXXX..      |
+# |      ..##++    xx      |
+# |    ..##      ::##..    |
+# |    ..##xx==####XX      |
+# |        ::    ##..      |
+# |            ..##        |
+# |            ====        |
+# |            ##          |
+# |            ..          |
+# +------------------------+
+# ** Info: Test Case    59
+#    Time: 5009465 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |                    ..  |
+# |              ..==++..  |
+# |        ::XX##xx        |
+# |        ::..            |
+# |      ..xx              |
+# |        ..==            |
+# |          XX            |
+# |          xx            |
+# |        ##..            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    60
+#    Time: 5094540 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 5
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |  XXXXxx==++..          |
+# |    ::++########        |
+# |            ..##XX      |
+# |              ++##      |
+# |              ++##      |
+# |              XXxx      |
+# |              ##..      |
+# |            XX##        |
+# |            ++..        |
+# +------------------------+
+# ** Info: Test Case    61
+#    Time: 5179615 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |          ..++....      |
+# |        ++##======XX    |
+# |        ##      ..##    |
+# |        ::xx  ::##==    |
+# |          XX##++..      |
+# |    ..####::XX..        |
+# |    XXXX==XX##          |
+# |      ........          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    62
+#    Time: 5264690 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   8
+# Expected: 8
+# +------------------------+
+# |                        |
+# |                        |
+# |        ......          |
+# |        xx....==        |
+# |        ++              |
+# |        ##    ::        |
+# |        XX  ::..        |
+# |          XXxx..        |
+# |            ....        |
+# |            ::..        |
+# |            ....        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    63
+#    Time: 5349765 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 9
+# +------------------------+
+# |                        |
+# |          ==            |
+# |          XX##..        |
+# |            ..##..      |
+# |                ==      |
+# |        ::....##::      |
+# |        ++XX##..        |
+# |            xx..        |
+# |    ..::  ++##..        |
+# |    ..##xx::..          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    64
+#    Time: 5434840 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |    XXXXXXXXxxXXxxxx    |
+# |              ..##xx    |
+# |        ..    ++XX      |
+# |        ####XX##XX++    |
+# |          ::##++....    |
+# |        ..##..          |
+# |        ##..            |
+# |      xxXX              |
+# |      ==                |
+# +------------------------+
+# ** Info: Test Case    65
+#    Time: 5519915 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |              ::        |
+# |          ==  ++        |
+# |          xx  ==        |
+# |        ..xx..XX        |
+# |        XXxx++==        |
+# |            ..++        |
+# |            ..++        |
+# |            ::..        |
+# |            ..          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    66
+#    Time: 5604990 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |          XX            |
+# |        xx..            |
+# |      ..==      ==..    |
+# |      ==      ##++++    |
+# |      xx    xx  ....    |
+# |      ==    XX  xx..    |
+# |      XX  ..==..xx      |
+# |      ::xx::####        |
+# |        ..::....        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    67
+#    Time: 5690065 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |                ..XX    |
+# |        ..      ##..    |
+# |      xx      ..==      |
+# |    ##..      XX..      |
+# |    ##==    ::##        |
+# |    ..XX####XX==        |
+# |            ..##        |
+# |            ++==        |
+# |            ::          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    68
+#    Time: 5775140 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |      ::==XXXX++        |
+# |      ++==++xx##..      |
+# |          ::==##..      |
+# |        ++####++        |
+# |        ######XX        |
+# |            ..##++      |
+# |        ......##++      |
+# |        XX######        |
+# |          ##==          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    69
+#    Time: 5860215 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |          ::......      |
+# |      ..XX####==XX==    |
+# |      ##..        ==++  |
+# |    ==++          ..##  |
+# |    ##..          ..XX  |
+# |    ##..        ..##..  |
+# |    ..##==++==##xx..    |
+# |        ........        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    70
+#    Time: 5945290 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |  ==========++          |
+# |        ::++xx####..    |
+# |                XX..    |
+# |              ..XX      |
+# |            ..##..      |
+# |            XX++        |
+# |          xx==          |
+# |        ::XX            |
+# |        ..              |
+# +------------------------+
+# ** Info: Test Case    71
+#    Time: 6030365 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |        ++######==      |
+# |      ..##==..++##==    |
+# |      ####      ::##    |
+# |    ..##..      ..##    |
+# |    ..##        ..##    |
+# |    ..##        ==##    |
+# |      ##::....==##==    |
+# |      ==####XXxx++      |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    72
+#    Time: 6115440 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   0
+# Expected: 0
+# +------------------------+
+# |                        |
+# |                        |
+# |      ####++++XX..      |
+# |      ....      XX..    |
+# |                ++..    |
+# |                ==..    |
+# |                XX      |
+# |      ....    xx::      |
+# |    ::xx++XXxx##        |
+# |    ::XX==XX==##..      |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    73
+#    Time: 6200515 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   2
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |          ....::..      |
+# |          ######xx      |
+# |        ==XX  xxXX      |
+# |          xx####==      |
+# |          ..####..      |
+# |          XXxx          |
+# |        XX##..          |
+# |      ==##::            |
+# |      ##xx              |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    74
+#    Time: 6285590 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |          ::==          |
+# |          ==xx          |
+# |          xxxx          |
+# |          ==xx          |
+# |          ++##          |
+# |          ++##          |
+# |          ++xx          |
+# |          xx::          |
+# |          ++..          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    75
+#    Time: 6370665 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |    ..      ..====      |
+# |    XXXX########        |
+# |            ==::        |
+# |        ....XX::::      |
+# |        ::####xx..      |
+# |            XX          |
+# |          ..XX          |
+# |          ::==          |
+# |          ....          |
+# +------------------------+
+# ** Info: Test Case    76
+#    Time: 6455740 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |          xxxx::        |
+# |        ::  ..::        |
+# |            ##          |
+# |        ..##==          |
+# |          ....XX..      |
+# |                ++      |
+# |              ::..      |
+# |      ==....xxXX        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    77
+#    Time: 6540815 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |      ..xxXXxx..        |
+# |    ++==      ##..      |
+# |    xx..      XX..      |
+# |            ..xx        |
+# |          ..xx          |
+# |        ..##::......++  |
+# |        ::..........::  |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    78
+#    Time: 6625890 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |              ::        |
+# |            XXxx        |
+# |          XX....::      |
+# |        XX==XX##..      |
+# |        ::++##..        |
+# |          ++++          |
+# |          ##..          |
+# |          xx            |
+# |        ..##::          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    79
+#    Time: 6710965 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |      ..====XX####::    |
+# |    ==############::    |
+# |    ..++......####..    |
+# |            xx##xx      |
+# |          XX##XX        |
+# |        xx##XX          |
+# |      ==##XX..          |
+# |      xx##==            |
+# |        ==              |
+# +------------------------+
+# ** Info: Test Case    80
+#    Time: 6796040 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |        XX++==++        |
+# |      ..##==####        |
+# |      ..##    ##        |
+# |      ..##    ##        |
+# |              ##        |
+# |              ##        |
+# |              ##        |
+# |              ##        |
+# |              ==        |
+# +------------------------+
+# ** Info: Test Case    81
+#    Time: 6881115 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |            ..++        |
+# |          xx##XX        |
+# |        ::##..          |
+# |        ##..            |
+# |        ##    ....      |
+# |        xx  ++##XX      |
+# |        xx  XX..XX      |
+# |        XXxx##====      |
+# |          ==xx::        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    82
+#    Time: 6966190 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |            ..xx        |
+# |      ..XX##xxXX==      |
+# |        ::    ++xx      |
+# |              ++xx      |
+# |              ##++      |
+# |            ::##        |
+# |      xx########..      |
+# |    ..######::==##::    |
+# |    ..##xx..      ==    |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    83
+#    Time: 7051265 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   2
+# Expected: 2
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |      ::xx==++++        |
+# |      ++..    ##::      |
+# |      XX      ##..      |
+# |      ..      ##        |
+# |              ##        |
+# |            ..##        |
+# |            ::XX        |
+# |            ====        |
+# |            ::          |
+# +------------------------+
+# ** Info: Test Case    84
+#    Time: 7136340 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |            ..::====    |
+# |        ==xx::  XX==    |
+# |      xxXX  ..##..      |
+# |    ..##....XX..        |
+# |      ::xx##xx          |
+# |        ::xx  XX::      |
+# |        ::==    XX      |
+# |          XX  ::++      |
+# |            xx::        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    85
+#    Time: 7221415 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   8
+# Expected: 8
+# +------------------------+
+# |                        |
+# |                        |
+# |      ..        ##..    |
+# |      ##::    ..##..    |
+# |    ..##==    xxXX      |
+# |    ..##XXxx####xx      |
+# |    ::##########::      |
+# |      ++xx  ..##XX      |
+# |            ::##::      |
+# |            xxXX        |
+# |            ++==        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    86
+#    Time: 7306490 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |                        |
+# |      ==XXXXxxxx::      |
+# |      ..==XX####xx      |
+# |            ++##::      |
+# |            XX##        |
+# |          ==##..        |
+# |          ##++          |
+# |        ..##..          |
+# |        ==XX            |
+# |          ++            |
+# +------------------------+
+# ** Info: Test Case    87
+#    Time: 7391565 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |                        |
+# |    ..XX####::          |
+# |    ....  ++==          |
+# |        ..##            |
+# |      ++##xx##..        |
+# |      ..    ..XX::==    |
+# |              ::XX      |
+# |            xx##==      |
+# |          XX++##..      |
+# |          ##XX          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    88
+#    Time: 7476640 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   5
+# Expected: 3
+# +------------------------+
+# |                        |
+# |          ##::          |
+# |        XX::            |
+# |        ##              |
+# |      ::##              |
+# |      ::##    ++##++    |
+# |      ..##  ..XX..XX    |
+# |        ##..##  ..xx    |
+# |        ..####xxXX..    |
+# |            ..::        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    89
+#    Time: 7561715 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |              ##        |
+# |            ..##        |
+# |            XX::        |
+# |          ::##          |
+# |          XXXX          |
+# |          ##XX          |
+# |        ..##::          |
+# |        ==##..          |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    90
+#    Time: 7646790 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |          ::####..      |
+# |        XX==..++==      |
+# |            ++##        |
+# |          ##XX##..      |
+# |              ..xx      |
+# |                XX      |
+# |      xx      ====      |
+# |      XX....xxxx        |
+# |      ::##==            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    91
+#    Time: 7731865 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |            ++##        |
+# |          ..xx          |
+# |          XX..          |
+# |        ==++            |
+# |        ##  ..==..      |
+# |        ##::xx..XX      |
+# |        ##XX    xx      |
+# |        ::##XX##..      |
+# |          ..::..        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    92
+#    Time: 7816940 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |            ....  ..    |
+# |          ..++  ..==    |
+# |          ++    XX      |
+# |        ++    xx..      |
+# |        ##==XX..        |
+# |          ..XX          |
+# |          xx            |
+# |        xx..            |
+# |        ++              |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    93
+#    Time: 7902015 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 9
+# +------------------------+
+# |                        |
+# |                        |
+# |      ..======..        |
+# |      ..########        |
+# |          XX####        |
+# |        ==######        |
+# |          ++==##..      |
+# |            ..##::      |
+# |      ......XX##        |
+# |      xx######==        |
+# |        XX##            |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    94
+#    Time: 7987090 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   3
+# Expected: 3
+# +------------------------+
+# |                        |
+# |                        |
+# |          ##::          |
+# |          ##::          |
+# |          ####          |
+# |          ####          |
+# |          XX##          |
+# |          ####          |
+# |          xx##++        |
+# |          ..##XX        |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    95
+#    Time: 8072165 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |              ..##++    |
+# |          XX..##XX..    |
+# |      ..##  ==##        |
+# |    ..##++..##XX::::    |
+# |    ++##XX==######..    |
+# |    ::##########::      |
+# |        ..####..        |
+# |          ==####        |
+# |            ++          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    96
+#    Time: 8157240 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   4
+# Expected: 4
+# +------------------------+
+# |                        |
+# |                        |
+# |        xx..            |
+# |          ##            |
+# |          XX++          |
+# |          ::XX          |
+# |            ##          |
+# |            ==..        |
+# |            ..==        |
+# |            ..==        |
+# |              ++        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    97
+#    Time: 8242315 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   1
+# Expected: 1
+# +------------------------+
+# |                        |
+# |                        |
+# |      ..                |
+# |      ##########        |
+# |          ++##..        |
+# |        ..::##          |
+# |        ==########XXxx..|
+# |          ##xx          |
+# |          ##::          |
+# |          ##==          |
+# |          ##..          |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    98
+#    Time: 8327390 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   7
+# Expected: 7
+# +------------------------+
+# |                        |
+# |              ##::      |
+# |          ::xx  ==..    |
+# |          xx            |
+# |        ##              |
+# |      ..xx              |
+# |      ::::              |
+# |      ==xx  xx##==      |
+# |      ..##XX....##      |
+# |        ::XXXXXX..      |
+# |                        |
+# |                        |
+# +------------------------+
+# ** Info: Test Case    99
+#    Time: 8412465 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   6
+# Expected: 6
+# +------------------------+
+# |                        |
+# |                        |
+# |          ::::          |
+# |      ::######XX        |
+# |      ##++    ##..      |
+# |    ..##    ..##XX      |
+# |      ##..++####xx      |
+# |      ..####..##..      |
+# |              XX        |
+# |              ##        |
+# |              ##..      |
+# |                        |
+# +------------------------+
+# ** Info: Test Case   100
+#    Time: 8497540 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 208
+# Result:   9
+# Expected: 9
+# ** Info: Num tested:           100,  Num correct:          90
+#    Time: 8507540 ns  Scope: tb_digit_recognizer_final File: source/tb_digit_recognizer_final.sv Line: 216
