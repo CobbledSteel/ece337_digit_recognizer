@@ -7,7 +7,7 @@
 source init.tcl
 
 # Create Floorplan
-floorplan -r 1.0 0.615 50 50 50 50
+floorplan -r 1.0 0.600 50 50 50 50
 unfixAllIos
 legalizePin
 
@@ -16,7 +16,7 @@ addRing -spacing_bottom 9.9 -width_left 9.9 -width_bottom 9.9 -width_top 9.9 -sp
 
 # Place standard cells
 
-setPlaceMode -congEffort medium
+setPlaceMode -congEffort high
 placeDesign -inPlaceOpt
 checkPlace
 

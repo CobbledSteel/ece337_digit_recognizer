@@ -7,7 +7,7 @@
 #***************************************************
 # Clock Constraints	
 #***************************************************
-create_clock -name {clk} -period 5.000000 -waveform { 0.0000000 2.5.000000}\
+create_clock -name {clk} -period 5.000000 -waveform { 0.0000000 2.5000000}\
    [list [get_ports {clk}]]
 
 

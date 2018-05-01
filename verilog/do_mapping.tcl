@@ -36,7 +36,7 @@ uniquify
 
 # set_max_area <area>
 # set_max_total_power <power> mW
- create_clock "clk" -name "clk" -period 3.3
+ create_clock "clk" -name "clk" -period 3.29
 
 # Step 3: Compile the design
 compile -map_effort high

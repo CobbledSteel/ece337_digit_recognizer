@@ -272,7 +272,8 @@ module cost_calculator
 	input wire [0:9] expected_label,
 	input wire [0:9][3:0] digit_weights,
 	output reg calculation_complete,
-	output wire [7:0] cost_output
+	output wire [7:0] cost_output,
+	reg [3:0] next_sub_reg
 );
 
 
@@ -285,7 +286,6 @@ module cost_calculator
   reg [4:0] sq_reg;
   reg [7:0] add_reg;
   reg [7:0] sto_reg;
-  reg [3:0] next_sub_reg;
   reg [7:0] next_sq_reg;
   reg [7:0] next_add_reg;
   reg [7:0] next_sto_reg;
@@ -467,17 +467,21 @@ module digit_decode
   input wire network_done,
   input wire [0:9][3:0] digit_weights,
   output wire [3:0] detected_digit,
-  output reg [3:0] next_digit
+  reg [3:0] mux_out,
+  reg [3:0] next_digit
 );
 
   wire [3:0] count_out;
   wire gt, lt, eq;
-  reg [3:0] mux_out;
+  reg [3:0] mux_out_reg;
   reg rollover_plc;
   reg [3:0] digit_val = 4'b0000;
   reg [3:0] max_val = 4'b000;
   reg [3:0] in_val;
   reg [0:9][3:0] weight_hold;
+
+  reg floppy;
+  wire floppy_nxt;
 
   assign detected_digit = digit_val;
 
@@ -486,17 +490,29 @@ module digit_decode
       max_val <= 4'b0000;
       digit_val <= 4'b0000;
       weight_hold <= {'0, '0, '0, '0, '0, '0, '0, '0, '0, '0};
+      mux_out_reg = 0;
     end else if (network_done == 1) begin
       max_val <= 4'b0000;
       digit_val <= 4'b0000;
       weight_hold <= digit_weights;
+      mux_out_reg = 0;
     end else begin
       max_val <= in_val;
+      mux_out_reg = mux_out;
       digit_val <= next_digit;
     end
   end
 
-  flex_counter INDEX_COUNT (.clk(clk), .n_rst(n_rst), .clear(network_done), .count_enable(1'b1), .rollover_val(4'b1001), .count_out(count_out), .rollover_flag(rollover_plc));
+  always_ff @ (posedge clk, negedge n_rst)
+  begin
+    if(n_rst == 0) floppy = 0;
+    else floppy = floppy_nxt;
+  end
+  assign floppy_nxt = !floppy && !network_done;
+
+  
+
+  flex_counter INDEX_COUNT (.clk(clk), .n_rst(n_rst), .clear(network_done), .count_enable(floppy), .rollover_val(4'b1001), .count_out(count_out), .rollover_flag(rollover_plc));
 
   always_comb begin: INPUT_MUX
     mux_out = 4'b0000;
@@ -514,11 +530,11 @@ module digit_decode
     endcase
   end
 
-  comparator COMPARATOR (.a(mux_out), .b(max_val), .gt(gt), .lt(lt), .eq(eq));
+  comparator COMPARATOR (.a(mux_out_reg), .b(max_val), .gt(gt), .lt(lt), .eq(eq));
 
   always_comb begin: COMPARATOR_LOGIC
-    if (gt == 1 || eq == 1) begin
-      in_val = mux_out;
+    if (gt == 1 || eq == 1 && !floppy) begin
+      in_val = mux_out_reg;
     end else begin
       in_val = max_val;
     end
@@ -921,6 +937,9 @@ module networkController
 	reg network_calc_nxt;
 	reg digit_done_nxt;
 	reg sigmoid_write_en_nxt;
+	reg clear_nxt;
+	reg accumulate_nxt;
+	reg addr_en_nxt;
 
 	wire [7:0] detect_count;
 
@@ -986,6 +1005,9 @@ module networkController
 			network_calc = 0;
 			digit_done = 0;
 			sigmoid_write_en = 0;
+			clear = 0;
+			accumulate = 0;
+			addr_en = 0;
 		end
 		else begin
 			shift_network = shift_nxt;
@@ -994,6 +1016,9 @@ module networkController
 			network_calc = network_calc_nxt;
 			digit_done = digit_done_nxt;
 			sigmoid_write_en = sigmoid_write_en_nxt;
+			clear = clear_nxt;
+			accumulate = accumulate_nxt;
+			addr_en = addr_en_nxt;
 		end
 	end
 
@@ -1253,18 +1278,18 @@ module networkController
 
 	always_comb
 	begin: LAYER_OUT_LOGIC
-		input_en = 0; weight_en = 0; bias_en = 0;shift_nxt = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address_nxt = 0;flashClear = 1;	
-		inc_input = 0;	inc_neuron = 0; addr_en = 0; neuronClear = 0; inputClear = 0;
+		input_en = 0; weight_en = 0; bias_en = 0;shift_nxt = 0;sig_write = 0;ready = 0;accumulate_nxt = 0;clear_nxt = 0;sigmoid_address_nxt = 0;flashClear = 1;	
+		inc_input = 0;	inc_neuron = 0; addr_en_nxt = 0; neuronClear = 0; inputClear = 0;
 
 	if(topState == LAYER1) 	begin
-		input_en = 0;weight_en = 0;bias_en = 0;	shift_nxt = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address_nxt = 0;
+		input_en = 0;weight_en = 0;bias_en = 0;	shift_nxt = 0;sig_write = 0;ready = 0;accumulate_nxt = 0;clear_nxt = 0;sigmoid_address_nxt = 0;
 		inc_input   = layer1State == INC_INPUT || layer1State == INC_NEURON;
 		inc_neuron  = layer1State == INC_NEURON;
 		bias_en     = layer1State == GET_BIAS;
 		weight_en   = layer1State == LOAD_DATA;
-		addr_en     = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == CHECK_DONE);
-		clear       = layer1State == GET_BIAS ;
-		accumulate  = layer1State == ACCU;
+		addr_en_nxt     = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == CHECK_DONE);
+		clear_nxt       = layer1State == REQ_WEIGHT;
+		accumulate_nxt  = layer1State == ACCU;
 		sig_write   = layer1State == CHECK_INPUT;
 		inputClear  = layer1State == LAYER_DONE;
 		neuronClear = layer1State == LAYER_DONE;
@@ -1290,14 +1315,14 @@ module networkController
 		end
 
 	if(topState == LAYER2) begin
-		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address_nxt = 0; flashClear = 0; addr_en = 0; neuronClear = 0; inputClear = 0;
+		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate_nxt = 0;clear_nxt = 0;sigmoid_address_nxt = 0; flashClear = 0; addr_en_nxt = 0; neuronClear = 0; inputClear = 0;
 		inc_input   = layer2State == INC_INPUT || layer2State == INC_NEURON;
 		inc_neuron  = layer2State == INC_NEURON;
 		bias_en     = layer2State == GET_BIAS;
 		weight_en   = layer2State == LOAD_NEURON1;
-		addr_en     = (layer2State == REQ_BIAS) || (layer2State == REQ_WEIGHT) || (layer2State == CHECK_DONE);
-		clear       = layer2State == GET_BIAS;
-		accumulate  = layer2State == ACCU;
+		addr_en_nxt     = (layer2State == REQ_BIAS) || (layer2State == REQ_WEIGHT) || (layer2State == CHECK_DONE);
+		clear_nxt       = layer2State == REQ_WEIGHT;
+		accumulate_nxt  = layer2State == ACCU;
 		sig_write   = layer2State == CHECK_INPUT;
 		inputClear  = layer2State == LAYER_DONE;
 		neuronClear = layer2State == LAYER_DONE;
