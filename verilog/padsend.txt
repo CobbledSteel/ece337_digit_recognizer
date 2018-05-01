@@ -1,0 +1,57 @@
+module  digit_recognizer_final ( clk, n_rst, SCK, SS, MOSI, data, MISO, ce, oe, 
+	we, address );
+
+input   [15:0] data;
+input   clk, n_rst, SCK, SS, MOSI;
+output  [15:0] address;
+output  MISO, ce, oe, we;
+wire	nclk, nn_rst, nSCK, nSS, nMOSI, nMISO, nce, noe, nwe;
+
+wire	[15:0] ndata;
+wire	[15:0] naddress;
+        digit_recognizer_final_t I0 ( .clk(nclk), .n_rst(nn_rst), .SCK(nSCK), .SS(nSS), 
+	.MOSI(nMOSI), .data(ndata), .MISO(nMISO), .ce(nce), .oe(noe), .we(nwe), .address(naddress) );
+
+PADOUT U1 ( .DO(nMISO), .YPAD(MISO) );
+PADOUT U2 ( .DO(naddress[0]), .YPAD(address[0]) );
+PADOUT U3 ( .DO(naddress[10]), .YPAD(address[10]) );
+PADOUT U4 ( .DO(naddress[11]), .YPAD(address[11]) );
+PADOUT U5 ( .DO(naddress[12]), .YPAD(address[12]) );
+PADOUT U6 ( .DO(naddress[13]), .YPAD(address[13]) );
+PADOUT U7 ( .DO(naddress[14]), .YPAD(address[14]) );
+PADOUT U8 ( .DO(naddress[15]), .YPAD(address[15]) );
+PADOUT U9 ( .DO(naddress[1]), .YPAD(address[1]) );
+PADOUT U10 ( .DO(naddress[2]), .YPAD(address[2]) );
+PADOUT U11 ( .DO(naddress[3]), .YPAD(address[3]) );
+PADOUT U12 ( .DO(naddress[4]), .YPAD(address[4]) );
+PADOUT U13 ( .DO(naddress[5]), .YPAD(address[5]) );
+PADOUT U14 ( .DO(naddress[6]), .YPAD(address[6]) );
+PADOUT U15 ( .DO(naddress[7]), .YPAD(address[7]) );
+PADOUT U16 ( .DO(naddress[8]), .YPAD(address[8]) );
+PADOUT U17 ( .DO(naddress[9]), .YPAD(address[9]) );
+PADOUT U18 ( .DO(nce), .YPAD(ce) );
+PADOUT U19 ( .DO(noe), .YPAD(oe) );
+PADOUT U20 ( .DO(nwe), .YPAD(we) );
+PADINC U21 ( .DI(nMOSI), .YPAD(MOSI) );
+PADINC U22 ( .DI(nSCK), .YPAD(SCK) );
+PADINC U23 ( .DI(nSS), .YPAD(SS) );
+PADINC U24 ( .DI(nclk), .YPAD(clk) );
+PADINC U25 ( .DI(ndata[0]), .YPAD(data[0]) );
+PADINC U26 ( .DI(ndata[10]), .YPAD(data[10]) );
+PADINC U27 ( .DI(ndata[11]), .YPAD(data[11]) );
+PADINC U28 ( .DI(ndata[12]), .YPAD(data[12]) );
+PADINC U29 ( .DI(ndata[13]), .YPAD(data[13]) );
+PADINC U30 ( .DI(ndata[14]), .YPAD(data[14]) );
+PADINC U31 ( .DI(ndata[15]), .YPAD(data[15]) );
+PADINC U32 ( .DI(ndata[1]), .YPAD(data[1]) );
+PADINC U33 ( .DI(ndata[2]), .YPAD(data[2]) );
+PADINC U34 ( .DI(ndata[3]), .YPAD(data[3]) );
+PADINC U35 ( .DI(ndata[4]), .YPAD(data[4]) );
+PADINC U36 ( .DI(ndata[5]), .YPAD(data[5]) );
+PADINC U37 ( .DI(ndata[6]), .YPAD(data[6]) );
+PADINC U38 ( .DI(ndata[7]), .YPAD(data[7]) );
+PADINC U39 ( .DI(ndata[8]), .YPAD(data[8]) );
+PADINC U40 ( .DI(ndata[9]), .YPAD(data[9]) );
+PADINC U41 ( .DI(nn_rst), .YPAD(n_rst) );
+
+endmodule
