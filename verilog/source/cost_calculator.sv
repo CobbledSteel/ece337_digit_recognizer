@@ -14,7 +14,8 @@ module cost_calculator
 	input wire [0:9] expected_label,
 	input wire [0:9][3:0] digit_weights,
 	output reg calculation_complete,
-	output wire [7:0] cost_output
+	output wire [7:0] cost_output,
+	reg [3:0] next_sub_reg
 );
 
 
@@ -27,7 +28,6 @@ module cost_calculator
   reg [4:0] sq_reg;
   reg [7:0] add_reg;
   reg [7:0] sto_reg;
-  reg [3:0] next_sub_reg;
   reg [7:0] next_sq_reg;
   reg [7:0] next_add_reg;
   reg [7:0] next_sto_reg;

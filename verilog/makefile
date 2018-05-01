@@ -269,7 +269,7 @@ tbsim_%_mapped: $(M_WORK_LIB)/% $(M_WORK_LIB)/tb_%
 # Set the default value of the clock name and clock period to an empty string so that clock timing will
 # only be activated in the SYN_CMDS definition if they were overwritten at invocation
 CLOCK_NAME 		:= clk
-CLOCK_PERIOD	:= 4.0
+CLOCK_PERIOD	:= 3.3
 
 # Set the default value of the source files for sub modules to be an empty string so that
 # it will only be used if overwritten at invocation
@@ -355,9 +355,15 @@ uniquify
  set_max_delay 3 -from "top_sigmoid_ALU/ADDER/in4" -to "top_sigmoid_ALU/ADDER/out"
  
  set_max_delay 3 -from "top_sigmoid_ALU/ACCUM/newval" -to "top_sigmoid_ALU/ACCUM/out"
- set_max_delay 3 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
+ set_max_delay 2.7 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
 
-  set_max_delay 2.9 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/next_digit"
+  set_max_delay 2 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/next_digit"
+  set_max_delay 2.4 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/mux_out"
+
+  set_max_delay 2.7 -from "top_cost_calculator/IND_BLOCK/count_out" -to "top_cost_calculator/next_sub_reg"
+
+  #set_max_delay 2.4 -from "top_network_controller/layer1State" -to "top_network_controller/input1"
+  #set_max_delay 3.0 -from "top_digit_decode/enable_reg" -to "top_digit_decode/next_digit"
 
 # set_max_area <area>
 # set_max_total_power <power> mW
@@ -367,7 +373,7 @@ $(if $(and $(CLOCK_NAME), $(CLOCK_PERIOD)), create_clock "$(CLOCK_NAME)" -name "
 compile -map_effort high
 
 # Step 4: Output reports
-report_timing -path full -delay max -max_paths 200 -nworst 200 > reports/$(MOD_NAME).rep
+report_timing -path full -delay max -max_paths 300 -nworst 300 > reports/$(MOD_NAME).rep
 report_area >> reports/$(MOD_NAME).rep
 report_power -hier >> reports/$(MOD_NAME).rep
 

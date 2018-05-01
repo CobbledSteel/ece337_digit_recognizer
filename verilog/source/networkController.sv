@@ -63,6 +63,9 @@ module networkController
 	reg network_calc_nxt;
 	reg digit_done_nxt;
 	reg sigmoid_write_en_nxt;
+	reg clear_nxt;
+	reg accumulate_nxt;
+	reg addr_en_nxt;
 
 	wire [7:0] detect_count;
 
@@ -128,6 +131,9 @@ module networkController
 			network_calc = 0;
 			digit_done = 0;
 			sigmoid_write_en = 0;
+			clear = 0;
+			accumulate = 0;
+			addr_en = 0;
 		end
 		else begin
 			shift_network = shift_nxt;
@@ -136,6 +142,9 @@ module networkController
 			network_calc = network_calc_nxt;
 			digit_done = digit_done_nxt;
 			sigmoid_write_en = sigmoid_write_en_nxt;
+			clear = clear_nxt;
+			accumulate = accumulate_nxt;
+			addr_en = addr_en_nxt;
 		end
 	end
 
@@ -395,18 +404,18 @@ module networkController
 
 	always_comb
 	begin: LAYER_OUT_LOGIC
-		input_en = 0; weight_en = 0; bias_en = 0;shift_nxt = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address_nxt = 0;flashClear = 1;	
-		inc_input = 0;	inc_neuron = 0; addr_en = 0; neuronClear = 0; inputClear = 0;
+		input_en = 0; weight_en = 0; bias_en = 0;shift_nxt = 0;sig_write = 0;ready = 0;accumulate_nxt = 0;clear_nxt = 0;sigmoid_address_nxt = 0;flashClear = 1;	
+		inc_input = 0;	inc_neuron = 0; addr_en_nxt = 0; neuronClear = 0; inputClear = 0;
 
 	if(topState == LAYER1) 	begin
-		input_en = 0;weight_en = 0;bias_en = 0;	shift_nxt = 0;sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address_nxt = 0;
+		input_en = 0;weight_en = 0;bias_en = 0;	shift_nxt = 0;sig_write = 0;ready = 0;accumulate_nxt = 0;clear_nxt = 0;sigmoid_address_nxt = 0;
 		inc_input   = layer1State == INC_INPUT || layer1State == INC_NEURON;
 		inc_neuron  = layer1State == INC_NEURON;
 		bias_en     = layer1State == GET_BIAS;
 		weight_en   = layer1State == LOAD_DATA;
-		addr_en     = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == CHECK_DONE);
-		clear       = layer1State == GET_BIAS ;
-		accumulate  = layer1State == ACCU;
+		addr_en_nxt     = (layer1State == REQ_BIAS) || (layer1State == REQ_WEIGHT) || (layer1State == CHECK_DONE);
+		clear_nxt       = layer1State == REQ_WEIGHT;
+		accumulate_nxt  = layer1State == ACCU;
 		sig_write   = layer1State == CHECK_INPUT;
 		inputClear  = layer1State == LAYER_DONE;
 		neuronClear = layer1State == LAYER_DONE;
@@ -432,14 +441,14 @@ module networkController
 		end
 
 	if(topState == LAYER2) begin
-		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate = 0;clear = 0;sigmoid_address_nxt = 0; flashClear = 0; addr_en = 0; neuronClear = 0; inputClear = 0;
+		input_en = 0; weight_en = 0; bias_en = 0; sig_write = 0;ready = 0;accumulate_nxt = 0;clear_nxt = 0;sigmoid_address_nxt = 0; flashClear = 0; addr_en_nxt = 0; neuronClear = 0; inputClear = 0;
 		inc_input   = layer2State == INC_INPUT || layer2State == INC_NEURON;
 		inc_neuron  = layer2State == INC_NEURON;
 		bias_en     = layer2State == GET_BIAS;
 		weight_en   = layer2State == LOAD_NEURON1;
-		addr_en     = (layer2State == REQ_BIAS) || (layer2State == REQ_WEIGHT) || (layer2State == CHECK_DONE);
-		clear       = layer2State == GET_BIAS;
-		accumulate  = layer2State == ACCU;
+		addr_en_nxt     = (layer2State == REQ_BIAS) || (layer2State == REQ_WEIGHT) || (layer2State == CHECK_DONE);
+		clear_nxt       = layer2State == REQ_WEIGHT;
+		accumulate_nxt  = layer2State == ACCU;
 		sig_write   = layer2State == CHECK_INPUT;
 		inputClear  = layer2State == LAYER_DONE;
 		neuronClear = layer2State == LAYER_DONE;

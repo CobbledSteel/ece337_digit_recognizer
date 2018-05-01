@@ -24,19 +24,25 @@ uniquify
  set_max_delay 3 -from "top_sigmoid_ALU/ADDER/in4" -to "top_sigmoid_ALU/ADDER/out"
  
  set_max_delay 3 -from "top_sigmoid_ALU/ACCUM/newval" -to "top_sigmoid_ALU/ACCUM/out"
- set_max_delay 3 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
+ set_max_delay 2.7 -from "top_sigmoid_ALU/SIGM/accum" -to "top_sigmoid_ALU/SIGM/sigma"
 
-  set_max_delay 2.9 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/next_digit"
+  set_max_delay 2 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/next_digit"
+  set_max_delay 2.4 -from "top_digit_decode/INDEX_COUNT/count_out" -to "top_digit_decode/mux_out"
+
+  set_max_delay 2.7 -from "top_cost_calculator/IND_BLOCK/count_out" -to "top_cost_calculator/next_sub_reg"
+
+  #set_max_delay 2.4 -from "top_network_controller/layer1State" -to "top_network_controller/input1"
+  #set_max_delay 3.0 -from "top_digit_decode/enable_reg" -to "top_digit_decode/next_digit"
 
 # set_max_area <area>
 # set_max_total_power <power> mW
- create_clock "clk" -name "clk" -period 4.0
+ create_clock "clk" -name "clk" -period 3.3
 
 # Step 3: Compile the design
 compile -map_effort high
 
 # Step 4: Output reports
-report_timing -path full -delay max -max_paths 200 -nworst 200 > reports/digit_recognizer_final.rep
+report_timing -path full -delay max -max_paths 300 -nworst 300 > reports/digit_recognizer_final.rep
 report_area >> reports/digit_recognizer_final.rep
 report_power -hier >> reports/digit_recognizer_final.rep
 

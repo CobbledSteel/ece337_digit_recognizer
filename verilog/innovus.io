@@ -146,6 +146,8 @@ Pad: U22 S
 Orient: R180
 Pad: U23 S
 Orient: R180
+Pad: U1 S
+Orient: R180
 Pad: DUM4 S PADNC
 Orient: R180
 Pad: DUM25 S PADNC
@@ -155,8 +157,6 @@ Orient: R180
 Pad: DUM29 S PADNC
 Orient: R180
 Pad: DUM35 S PADNC
-Orient: R180
-Pad: U1 S
 
 Orient: R180
 Pad: c4 SE PADFC
