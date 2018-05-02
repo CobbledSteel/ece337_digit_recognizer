@@ -1,0 +1,78 @@
+WARNING make_concat.sh MUST BE USED TO COMPILE AND RUN THE DIGIT_RECOGNIZER
+///////////////////////////////////////////////////////////////////////////
+USE OF: make_concat.sh
+
+The script file make_concat.sh has two options available to it.
+
+1. make_concat.sh source
+
+	concatenates all module files into a
+	single digit_recognizer_final.sv
+
+	runs associated test bench on source
+	version of digit_recognizer_final
+	
+2. make_concat.sh mapped
+
+	dumps previously the previously 
+	created mapped file and re-synthesizes
+	based on makefile parameters
+	
+	concatenates all module files into a
+	single digit_recognizer_final.sv
+	
+	runs associated test bench on mapped
+	version of digit_recognizer_final
+	
+	after questsim is closed, pads are
+	added to digit_recognizer_final
+///////////////////////////////////////////////////////////////////////////	
+ONCE TEST BENCH HAS BEEN OPENED
+
+1. Type the command
+	For the source test bench (add waves and associated properties)
+	a. do wave_source.do
+	For the mapped test bench (add waves and associated properties)
+	b. do wave_mapped.do
+	
+2. Specify test_count variable
+
+    The number of test images to be run on our digit recognizer can
+	be specified up to 10,000 images.
+	
+	To change the test count
+	
+	force test_count <image vector size>
+	
+3. Specify test option
+
+	There are three different test options that can be run within our
+	test bench.
+	
+	1. Option 0 (Default)
+	
+		Runs the digit recognizer purely on handwritten digit input
+		and outputs the associated digit value that the network
+		believes is correct
+		
+	2. Option 1
+	
+		Runs the digit recognizer purely on handwritten digit input
+		and outputs the associated digit value that the network
+		believes is correct
+		
+		Runs the digit recognizer for each of the above digits to
+		determine the cost of each operation. The test bench shows
+		both the actual cost output and the expected cost.
+		
+	3. Option 2
+	
+		Runs the digit recognizer to test for error codes based on
+		the SPI controllers. If a value is requested too early, the
+		error code should be 255 (0xFF).
+		
+	To change any option use the command in the transcript of the test bench
+	
+	force option <option number>
+///////////////////////////////////////////////////////////////////////////		
+
