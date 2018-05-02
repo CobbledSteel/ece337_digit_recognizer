@@ -24,7 +24,7 @@ The script file make_concat.sh has two options available to it.
 	runs associated test bench on mapped
 	version of digit_recognizer_final
 	
-	after questsim is closed, pads are
+	after questasim is closed, pads are
 	added to digit_recognizer_final
 ///////////////////////////////////////////////////////////////////////////	
 ONCE TEST BENCH HAS BEEN OPENED
