@@ -1,3 +1,11 @@
+// $Id: $
+// File name:   sigmoid_ALU.sv
+// Created:     4/11/2018
+// Author:      Vadim Nikiforov
+// Lab Section: 337-03
+// Version:     1.0 Final module revision 
+// Description: Test bench for the SPI output controller
+
 `timescale 1ns / 10ps
 
 module tb_SPI_output_controller();

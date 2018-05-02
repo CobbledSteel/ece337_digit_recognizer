@@ -1,3 +1,13 @@
+// $Id: $
+// File name:   sigmoidRegisters.sv
+// Created:     4/4/2018
+// Author:      Dustin Andree
+// Lab Section: 337-08
+// Version:     1.0  Initial Design Entry
+// Description: Sigmoid registers for storing neuron outputs
+//              This is made up of individual addressable registers which
+//              can be enabled using an address.
+
 module sigmoidRegisters
 (
 	input wire clk,
@@ -13,6 +23,7 @@ module sigmoidRegisters
 
 	assign data_out = chooseData;
 
+	// registers for the hidden neurons
 	genvar i;
 	generate
 	for (i = 0; i<=7 ;i = i + 1) begin
@@ -20,12 +31,14 @@ module sigmoidRegisters
 	end
 	endgenerate
 
+	// registers for the output neurons
 	generate
 	for(i = 0; i<=9; i = i + 1) begin
 		sigmoidRegisters_addressableReg #(.ADDRESS(i + 8)) weightReg(.clk(clk), .write_en(write_en), .data_in(data_in), .data_out(digit_weights[i]), .address_in(address));
 	end
 	endgenerate
 
+	// multiplexer for choosing the ouput
 	always_comb
 	begin
 		if(0 == address)

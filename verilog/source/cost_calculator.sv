@@ -5,6 +5,9 @@
 // Lab Section: 337-03
 // Version:     1.0  Initial Design Entry
 // Description: Cost Calculator Module for Handwritten Digit Recognizer
+//              Takes in the current confidences from the sigmoid registers as well as
+//              the expected digit from the SPI input controller. Ouputs the cost as
+//              a root-mean-square value
 
 module cost_calculator
 (
@@ -43,12 +46,16 @@ module cost_calculator
   wire [7:0] adder_input_a;
   wire [3:0] cur_input;
 
+  // subtractor for taking the expected and currrent differences
   abs_subtractor_4bit SUB_BLOCK (.a(mux_label), .b(mux_confidence), .mag_diff(next_sub_reg));
 
+  // multiplier for squaring
   mult_4bit           SQ_BLOCK  (.a(sub_reg), .b(sub_reg), .product(next_sq_reg));
 
+  // adder for adding square values
   adder_8bit          ADD_BLOCK (.a(adder_input_a), .b(sto_reg), .carry_in(1'b0), .sum(next_add_reg), .overflow(add_overflow));
 
+  // counter for current digit that is being compared
   flex_counter	 #(4) IND_BLOCK (.clk(clk), .n_rst(n_rst), .clear(cost_en), .count_enable(inc_index), .rollover_val(4'b1001), .count_out(cur_input), .rollover_flag(fin_flag));
 
 
@@ -115,6 +122,7 @@ module cost_calculator
       end
   end
 
+  // next state logic
   always_comb
   begin : NXT_LOGIC
     next_state = state;

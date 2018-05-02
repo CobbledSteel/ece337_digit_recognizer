@@ -1,3 +1,10 @@
+// $Id: $
+// File name:   tb_sigmoid_ALU.sv
+// Created:     4/11/2018
+// Author:      
+// Lab Section: 99
+// Version:     1.0  Initial Design Entry
+// Description: Sigmoid ALU test bench
 
 `timescale 1ns / 10ps
 
@@ -34,9 +41,7 @@ reg [7:0][3:0] hidden_outputs;
 reg [9:0][3:0] outer_outputs;
 reg [7:0][15:0] hidden_sums;
 reg [9:0][15:0] outer_sums;
-//  [8 neruons][36 rows][4 per row][4 bits]
 reg [7:0][35:0][3:0][3:0] h_weights;
-//  [10 neruons][2 rows][4 per row][4 bits]
 reg [9:0][1:0][3:0][3:0] o_weights;
 integer h_biases [7:0];
 reg [9:0][3:0] o_biases;
@@ -86,6 +91,7 @@ sigmoid_ALU DUT
 	.out(tb_out)
 );
 
+// load an image from the test vector
 task load_image;
 begin
 	$fscanf(image_file, "Expected digit: %d", expected_label);
@@ -96,6 +102,7 @@ begin
 end
 endtask
 
+// load weights from the test vector
 task load_weights;
 begin
 	for( i = 0; i < 8; i++)
@@ -116,6 +123,7 @@ begin
 end
 endtask
 
+// load biases from the test vector
 task load_biases;
 begin
 	for( i = 0; i < 8; i++)
@@ -129,11 +137,10 @@ begin
 end
 endtask
 
+// run all the weights, inputs, and biases for one test image
 task run_test;
 begin
 	load_image;
-	//$display("loading image");
-	//$display("starting hidden layer");
 	for(i=0; i<8;i++)
 	begin
 		@(negedge tb_clk)
@@ -218,11 +225,7 @@ begin
 		outer_outputs[i] = tb_out;
 		outer_sums[i] = tb_accum_out;
 	end
-	//$display("Expected Label: %d", expected_label);
-	//for (i=0;i<10;i++)
-	//begin
-	//	$display("Ouput %d: %d", i, outer_outputs[i]);
-	//end
+
 	max = 0;
 	max_index = 0;
 	for (i=0; i<10;i++)
@@ -273,6 +276,7 @@ end
 endtask
 
 
+// system clock
 always 
 begin
 	tb_clk = 0;
@@ -283,6 +287,7 @@ end
 
 initial
 begin
+	// load files with test vectors
 	hidden_weights = $fopen("docs/hidden_weights.txt","r");
 	hidden_biases = $fopen("docs/hidden_biases.txt","r");
 	output_weights = $fopen("docs/output_weights.txt","r");

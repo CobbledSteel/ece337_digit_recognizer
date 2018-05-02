@@ -1,3 +1,16 @@
+// $Id: $
+// File name:   networkController.sv
+// Created:     4/4/2018
+// Author:      Dustin Andree
+// Lab Section: 337-08
+// Version:     1.0  Initial Design Entry
+// Description: Network controller for the digit recognizer
+//              Gathers data from the Pixel Data Registers, Flash Memory
+//              Controller, and the Sigmoid Registers, and loads them into
+//              the Sigmoid ALU. Stores the resuling values into the 
+//              sigmoid data registers. Also keeps track of which part of the
+//              network is being computed, and which calculations are finished
+
 module networkController
 (
 	input wire clk,
@@ -82,6 +95,7 @@ module networkController
 	stateType layer2State, nxt_layer2State;
 	
 
+	// counter for keeping track how many inputs have been loaded
 	flex_counter #(.NUM_CNT_BITS(6)) inputCounter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(inputClear), 
@@ -90,6 +104,7 @@ module networkController
 		.count_out(inputCountOut), 
 		.rollover_flag(input_rollover));
 
+	// counter for keeping track of when data was received from the flash
 	flex_counter #(.NUM_CNT_BITS(4)) flashCounter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(flashClear), 
@@ -98,6 +113,7 @@ module networkController
 		.count_out(flash_counter), 
 		.rollover_flag());
 
+	// counter for incrementing the flash address
 	flex_counter #(.NUM_CNT_BITS(9)) flashAddressCounter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(topState == IDLE), 
@@ -106,6 +122,7 @@ module networkController
 		.count_out(flash_address_low), 
 		.rollover_flag());
 
+	// counter for keeping track of which neuron is being processed
 	flex_counter #(.NUM_CNT_BITS(4)) neuronCounter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(neuronClear), 
@@ -114,6 +131,7 @@ module networkController
 		.count_out(neuronCountOut), 
 		.rollover_flag(neuron_rollover));
 
+	// counter for waiting until the digit has been detected
 	flex_counter #(.NUM_CNT_BITS(8)) detectCounter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(), 
@@ -122,6 +140,7 @@ module networkController
 		.count_out(detect_count), 
 		.rollover_flag(digit_done_nxt));
 
+	// output registers
 	always_ff @(posedge clk, negedge n_rst)
 	begin : output_registers
 		if (n_rst == 0) begin
@@ -149,6 +168,7 @@ module networkController
 	end
 
 
+	// weight registers
 	always_ff@(posedge clk, negedge n_rst)
 	begin: weightRegisters
 		if(n_rst == 0)	begin
@@ -165,6 +185,7 @@ module networkController
 		end
 	end
 
+	// weight next state logic
 	always_comb
 	begin: nxt_weight_logic
 		nxt_weight1 = weight1;
@@ -180,6 +201,7 @@ module networkController
 		end
 	end
 
+	// input register logic
 	always_ff@(posedge clk, negedge n_rst)
 	begin: inputRegisters
 		if(n_rst == 0) begin
@@ -196,6 +218,7 @@ module networkController
 		end
 	end
 
+	// input next state logic
 	always_comb
 	begin: nxt_input_logic
 		nxt_input1 = input1;
@@ -224,12 +247,14 @@ module networkController
 		
 	end
 
+	// bias register 
 	always_ff@(posedge clk, negedge n_rst)
 	begin: biasregister
 		if(n_rst == 0) 	bias <= '0;
 		else 		bias <= nxt_bias;
 	end
 
+	// bias next state logic
 	always_comb
 	begin: nxt_bias_logic
 		nxt_bias = bias;
@@ -237,6 +262,7 @@ module networkController
 			nxt_bias = flashData_out[3:0];
 	end
 
+	// state registers
 	always_ff@(posedge clk, negedge n_rst)
 	begin: stateregister
 		if(n_rst == 0) begin
@@ -251,6 +277,7 @@ module networkController
 		end
 	end
 
+	// next top state logic
 	always_comb
 	begin: next_topState_logic
 
@@ -279,6 +306,7 @@ module networkController
 		endcase
 	end
 
+	// next state logic for first layer 
 	always_comb
 	begin: next_layer1State_logic
 
@@ -332,6 +360,7 @@ module networkController
 		endcase
 	end
 
+	// next state logic for second layer 
 	always_comb
 	begin: next_layer2State_logic
 
@@ -387,6 +416,7 @@ module networkController
 	end
 
 
+	// output logic for top level block
 	always_comb
 	begin: TOP_OUT_LOGIC
 		input_rollover_in = 0; neuron_rollover_in = 0; network_done_nxt = 0; network_calc_nxt = 0; data_ready = 0; inc_detect = 0;
@@ -402,6 +432,7 @@ module networkController
 		endcase
 	end
 
+	// output logic for first and second layer 
 	always_comb
 	begin: LAYER_OUT_LOGIC
 		input_en = 0; weight_en = 0; bias_en = 0;shift_nxt = 0;sig_write = 0;ready = 0;accumulate_nxt = 0;clear_nxt = 0;sigmoid_address_nxt = 0;flashClear = 1;	

@@ -5,6 +5,11 @@
 // Lab Section: 337-08
 // Version:     1.0  Initial Design Entry
 // Description: SPI output controller file
+//              Used to output detected values via
+//              SPI. Decides which values need to
+//              be sent. If the data is not ready
+//              to be sent, send an error code 
+//              instead.
 
 module SPI_output_controller (
 	input wire clk,
@@ -37,6 +42,7 @@ module SPI_output_controller (
 	assign shift_output = shift_SPI & (state == cost_sent | state == dig_sent );
 
 	
+	// Counter to count bits
 	flex_counter #(4) spi_input_4bit_counter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(flag_short), 
@@ -46,7 +52,7 @@ module SPI_output_controller (
 		.rollover_flag(flag_long) 
 	); 
 	
-	
+	// Parallel to serial shift reigster for sending data over MISO	
 	gen_pts_sr #(.NUM_BITS(8), .SHIFT_MSB(0)) spi_output_ptssr (
 		.clk(clk), 
 		.n_rst(n_rst), 
@@ -66,6 +72,7 @@ module SPI_output_controller (
 		end
 	end
 	
+	// next state logic
 	always_comb
 	begin : nextStateLogic
 		next_state = state;
@@ -97,6 +104,7 @@ module SPI_output_controller (
 	end
 	
 
+	// logic for selecting output value
 	always_comb
 	begin 
 		//output logic

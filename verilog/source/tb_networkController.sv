@@ -1,10 +1,10 @@
 // $Id: $
 // File name:   tb_networkController.sv
 // Created:     2/5/2013
-// Author:      foo
+// Author:      Dustin Andree
 // Lab Section: 99
 // Version:     1.0  Initial Design Entry
-// Description: starter top level test bench provided for Lab 5
+// Description: Network controller rest bench
 
 `timescale 1ns / 10ps
 

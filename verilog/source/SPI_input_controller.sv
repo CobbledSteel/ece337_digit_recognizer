@@ -4,7 +4,12 @@
 // Author:      Chan Weng Yan
 // Lab Section: 337-03
 // Version:     1.0  Initial Design Entry
-// Description: SPI input controller file
+// Description: SPI input controller 
+//              used to control the SPI input
+//              signals for the system, manages
+//              the opcodes that are sent
+//              and routes data to the correct 
+//              destinations
 
 module SPI_input_controller (
 	input wire clk,
@@ -30,6 +35,7 @@ module SPI_input_controller (
 	state_type state;
 	state_type next_state;
 		
+	// counter for keeping track of sent pixels
 	flex_counter #(7) spi_input_7bit_counter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(is_idle), 
@@ -39,6 +45,7 @@ module SPI_input_controller (
 		.rollover_flag(pixel_rollover) 
 	); 
 	
+	// counter for keeping track of when a byte was sent	
 	flex_counter #(4) spi_input_4bit_counter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(), 
@@ -48,6 +55,7 @@ module SPI_input_controller (
 		.rollover_flag(flag_long) 
 	); 
 	
+	// serial to parallel shift reigster for storing data sent via SPI
 	gen_stp_sr #(.NUM_BITS(8), .SHIFT_MSB(0)) spi_input_stpsr(
 		.clk(clk), .n_rst(n_rst), 
 		.shift_enable(sig_edge),
@@ -55,6 +63,7 @@ module SPI_input_controller (
 	.parallel_out(parallel_out)
 	);
 	
+	// synchronizers and edge detectors for SPI inputs	
 	gen_sync 	     spi_input_sync	(.clk(clk), .n_rst(n_rst), .async_in(async_in), .sync_out(sync_out));
 	gen_pos_edge_detect  spi_input_pos_edge	(.clk(clk), .n_rst(n_rst), .sig(sig), .sig_edge(sig_edge));
 

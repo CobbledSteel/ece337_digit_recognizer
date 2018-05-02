@@ -1,3 +1,11 @@
+// $Id: $
+// File name:   pixelData_PTPSR.sv
+// Created:     4/4/2018
+// Author:      Dustin Andree
+// Lab Section: 337-08
+// Version:     1.0  Initial Design Entry
+// Description: An 8 bit shift register that shifs the current value out when enabled
+
 module pixelData_PTPSR
 (
 	input wire shift_en,

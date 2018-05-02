@@ -5,6 +5,7 @@
 // Lab Section: 337-03
 // Version:     1.0  Initial Design Entry
 // Description: Comparator to determine the max confidence level output from the sigmoid registers and output the associated digit value
+//              Used to output the final digit value to the SPI output controller.
 
 module digit_decode
 (
@@ -49,6 +50,7 @@ module digit_decode
     end
   end
 
+  // flip-flop for incrementing the counter every other clock cycle
   always_ff @ (posedge clk, negedge n_rst)
   begin
     if(n_rst == 0) floppy = 0;
@@ -58,6 +60,7 @@ module digit_decode
 
   
 
+  // counter for which digit is being checked
   flex_counter INDEX_COUNT (.clk(clk), .n_rst(n_rst), .clear(network_done), .count_enable(floppy), .rollover_val(4'b1001), .count_out(count_out), .rollover_flag(rollover_plc));
 
   always_comb begin: INPUT_MUX

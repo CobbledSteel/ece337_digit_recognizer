@@ -5,6 +5,30 @@
 // Lab Section: 337-03
 // Version:     1.0  Initial Design Entry
 // Description: Top level testbench for digit recognizer
+//
+//              Has several methods of testing, including simply getting
+//              digit results, getting costs as well as digits, and also
+//              testing for proper error code transmission. Uses the 
+//              follwing files for the test vectors:
+//              
+//                images.txt       - data for the images and their correct digits
+//                cost_outputs.txt - data for the expected cost output
+//              
+//              The cost and image test vectors are structured in the same order.
+//              
+//              In order to change the tests run, in QuestaSim force the following
+//              variables:
+//               
+//              option:
+//                0: test only digit results (for throughput)
+//                1: test digit results and cost
+//                2: test error code validity
+//              
+//              test_count: 
+//                n: process n images (valid for options 0 and 1)
+//              
+//              see the external_fm.sv file for instructions on
+//              preparing the input vectors for weights and biases
 
 `timescale 1ns / 100ps
 
@@ -43,6 +67,7 @@ reg [0:3][3:0] temp;
 
 integer test_count;
 
+// Digit recognizer device (compiled file)
 digit_recognizer_final DUT 
 (
 	.clk(tb_clk), 
@@ -58,6 +83,7 @@ digit_recognizer_final DUT
 	.we(tb_we)
 );
 
+// Flash memory simulation (always in source)
 external_fm FLASH 
 (
 	.oe(tb_oe),
@@ -67,6 +93,7 @@ external_fm FLASH
 	.data(tb_data)
 );
 
+// send one byte by itself, only enabling SPI for its duration
 task send_byte(integer data);
 begin
 	@(negedge tb_test_SCK);
@@ -83,6 +110,7 @@ begin
 end
 endtask
 
+// send a byte in sequence with other bytes, without togggling SPI
 task send_byte_fast(integer data);
 begin
 	for(i=0; i < 8; i++)
@@ -94,10 +122,11 @@ begin
 end
 endtask
 
+// receive a byte from the device, keeping MOSI idle
 task get_byte();
 begin
 	result = 0;
-		tb_MOSI = 1;
+	tb_MOSI = 1;
 	@(negedge tb_test_SCK);
 	tb_SS = 0;
 	tb_SCK_enable = 1;
@@ -113,6 +142,8 @@ begin
 end
 endtask
 
+// for a pixel value, write an ASCII character 
+// corresponding to the darkness
 task write_shade(integer shade);
 begin
 	case(shade)
@@ -129,6 +160,8 @@ begin
 end
 endtask
 
+// send an image from the test vector file. File pointer
+// should be at the start of a new image
 task send_image();
 begin
 	$fscanf(img_fptr, "Expected digit: %d", expected_val);
@@ -156,7 +189,7 @@ begin
 end
 endtask
 
-
+// system clock
 always 
 begin
 	tb_clk = 0;
@@ -165,6 +198,7 @@ begin
 	#(CLK_PERIOD/2.0);
 end
 
+// SPI clock that can be enabled
 always 
 begin
 	tb_SCK = 0;
@@ -177,6 +211,7 @@ end
 
 initial
 begin
+	// set default values
 	tb_n_rst = 0;
 	tb_MOSI = 1;
 	tb_SCK = 0;
@@ -195,6 +230,7 @@ begin
 
 	test_count = 10;
 
+	// test digit results only
 	if(option == 0)
 	begin
 		for(m=0; m<test_count; m++)
@@ -215,6 +251,7 @@ begin
 		end
 		$info("Num tested:   %d,  Num correct: %d", num_tested, num_correct);
 	end
+	// test cost and digit results
 	else if (option == 1)
 	begin
 		for(m=0; m<test_count; m++)
@@ -247,6 +284,7 @@ begin
 		$info("Num tested:   %d,  Num digit correct: %d", num_tested, num_correct);
 		$info("Num tested:   %d,  Num cost correct:  %d", num_tested, num_cost_correct);
 	end
+	// test error code results 
 	else if (option == 2)
 	begin
 			$info("Test empty request after reset");

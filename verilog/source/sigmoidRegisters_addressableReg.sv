@@ -1,3 +1,12 @@
+// $Id: $
+// File name:   sigmoidRegisters.sv
+// Created:     4/4/2018
+// Author:      Dustin Andree
+// Lab Section: 337-08
+// Version:     1.0  Initial Design Entry
+// Description: Addressalbe register for the sigmoid regs
+//              Uses a parameter to determine which address is used to enable
+//              the register.
 module sigmoidRegisters_addressableReg #(parameter ADDRESS=0)
 
 (

@@ -5,6 +5,9 @@
 // Lab Section: 337-08
 // Version:     1.0  Initial Design Entry
 // Description: Flash Memory Controller source
+//              Satisfies the requirements for the SST39LF200A flash memory
+//              Gathers data by sending an address and waiting for the data
+//              as per the datasheet.
 
 module fmc (
 	input wire clk,
@@ -20,6 +23,7 @@ module fmc (
 	reg clear_cnt, count_en, load_data;
 	reg [3:0] count_out;
 
+	// counter for keeping track of the timing
 	flex_counter #(4) fmc_counter(
 		.clk(clk), 
 		.n_rst(n_rst), 
@@ -34,6 +38,7 @@ module fmc (
 	state_type state;
 	state_type next_state;
 
+	// IO registers and state registers
 	always_ff @ (posedge clk, negedge n_rst)
 	begin
 		if (n_rst == 1'b0) begin
@@ -50,6 +55,8 @@ module fmc (
 		end
 	end
 	
+
+	// next state logic
 	always_comb
 	begin : nextStateLogic
 		next_state = state;
@@ -75,6 +82,7 @@ module fmc (
 		endcase
 	end
 
+	// output logic
 	always_comb
 	begin : outputLogic
 		we = 1'b1;

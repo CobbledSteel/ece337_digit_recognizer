@@ -5,6 +5,16 @@
 // Lab Section: 337-08
 // Version:     1.0  Initial Design Entry
 // Description: Top level file digit recognizer
+//              Takes input from SPI, and also a SST39LF200A flash
+//              memory chip. Input is either an opcode, pixel values 
+//              for a 12x12 grayscale image of a digit, or an expected
+//              digit in binary. The flash memory stores data sequentially
+//              for each neuron, starting from the hidden layer, and followed by
+//              the output layer. Each neuron takes in its bias first, followed
+//              by every weight. Order for the image is always sent left to right,
+//              top to bottom. The output is delivered 30us after the last 
+//              image byte is sent over SPI, or 300ns for the last byte is
+//              sent for the cost.
 
 module digit_recognizer_final (
 	input wire clk,
@@ -45,6 +55,7 @@ module digit_recognizer_final (
 	wire [0:9][3:0] digit_weights;			// digit decode; sigmoid regs; cost calculator
 	wire [3:0] detected_digit;			// digit decode
 	
+	// Network controller
 	networkController	top_network_controller (
 		.clk(clk), .n_rst(n_rst), 
 		.write_en(write_en),
@@ -73,6 +84,7 @@ module digit_recognizer_final (
 		.clear(clear)
 	);
 	
+	// SPI Input Controller
 	SPI_input_controller 	top_spi_input (		
 		.clk(clk), .n_rst(n_rst), 
 		.MOSI(MOSI), .SCK(SCK), .SS(SS),
@@ -85,6 +97,7 @@ module digit_recognizer_final (
 		.sig_edge(sig_edge)
 	);
 	
+	// SPI Output Controller
 	SPI_output_controller 	top_spi_output (
 		.clk(clk), .n_rst(n_rst), 
 		.shift_SPI(shift_SPI), 
@@ -98,7 +111,8 @@ module digit_recognizer_final (
 		.sig_edge(sig_edge),
 		.MISO(MISO)	// output
 	);
-	
+       
+        // Pixel Data Registers	
 	pixelData 	top_pixel_data (
 		.clk(clk),
 		.shift_SPI(shift_SPI),
@@ -109,6 +123,7 @@ module digit_recognizer_final (
 		.pixel_data_1(pixel_data1), .pixel_data_2(pixel_data2)
 	);
 	
+	// Sigmoid Registers
 	sigmoidRegisters	top_sigmoid_registers (
 		.clk(clk),
 		.write_en(sigmoid_write_en),
@@ -118,6 +133,7 @@ module digit_recognizer_final (
 		.digit_weights(digit_weights)
 	);
 	
+	// Flash Memory Controller
 	fmc 	top_fmc(
 		.clk(clk), .n_rst(n_rst), 
 		.ready(flash_ready), 
@@ -128,6 +144,7 @@ module digit_recognizer_final (
 		.ce(ce), .oe(oe), .we(we) 
 	);
 
+	// Sigmoid ALU
 	sigmoid_ALU 	top_sigmoid_ALU (
 		.clk(clk), 
 		.weight1(weight1), .weight2(weight2), .weight3(weight3), .weight4(weight4),
@@ -138,7 +155,8 @@ module digit_recognizer_final (
 		.out(alu_output), // output
 		.accum_out() // dummy
 	);
-	
+
+	// Cost Calculator
 	cost_calculator	top_cost_calculator (
 		.clk(clk), .n_rst(n_rst), 
 		.cost_en(calculate_cost),
@@ -147,7 +165,8 @@ module digit_recognizer_final (
 		.calculation_complete(calculation_complete), // output
 		.cost_output(cost_output)
 	);
-	
+
+	// Digit Decoder	
 	digit_decode	top_digit_decode (
 		.clk(clk), .n_rst(n_rst), 
 		.network_done(network_done),

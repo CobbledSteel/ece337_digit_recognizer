@@ -5,6 +5,15 @@
 // Lab Section: 337-08
 // Version:     1.0  Initial Design Entry
 // Description: External flash memory simulation
+//              Pre-loaded with the weights and biases for a 
+//              successful model. Files are as follows:
+//                Hidden Biases  - docs/hidden_biases.txt
+//                Hidden weights - docs/hidden_weights.txt
+//                Output Biases  - docs/hidden_biases.txt
+//                Output weights - docs/hidden_weights.txt
+//              Biases have one bias per line, and weights
+//              have four weights per line, so that each line
+//              satisfies one word
 
 module external_fm (
 	input wire oe,
@@ -13,7 +22,7 @@ module external_fm (
 	input wire [15:0] address,
 	output reg [15:0] data
 );
-	// hbias, hweights, 
+	// hidden bias, hidden weights, 
 	reg [0:330] [15:0] data_array; // 326 + 5 = 331
 	reg [3:0] num1, num2, num3, num4;
 	integer i,j,k;
@@ -26,6 +35,7 @@ module external_fm (
 	fo_biases = $fopen("docs/output_biases.txt","r");
 	fo_weights = $fopen("docs/output_weights.txt","r");
 	
+	// load the hidden layer
 	k=0;
 	for(i=0; i<8; i++) begin
 		$fscanf(fh_biases, "%d", data_array[k]);
@@ -38,6 +48,7 @@ module external_fm (
 		end 
 	end
 
+	// load the output layer
 	for(i=0; i<10; i++) begin
 		$fscanf(fo_biases, "%d", data_array[k]);
 		k += 1;
@@ -48,7 +59,9 @@ module external_fm (
 			k += 1;
 		end
 	end
-
+	
+	// Pad the end with zeroes so that values are initialized
+	// For simulation
 	data_array[k++] = '0;
 	data_array[k++] = '0;
 	data_array[k++] = '0;
