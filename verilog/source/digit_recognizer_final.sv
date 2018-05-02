@@ -1429,8 +1429,15 @@ endmodule
 // Created:     4/11/2018
 // Author:      Vadim Nikiforov
 // Lab Section: 337-03
-// Version:     1.0  Initial Design Entry
-// Description: top level file for the Sigmoid ALU
+// Version:     1.0 Final module revision 
+// Description: Top level file for the Sigmoid ALU
+//              Takes in an input of four
+//              4 bit weights, and four
+//              4 bit inputs, and accumulates
+//              them. It outputs the accumulator
+//              value passed through a sigmoid
+//              lookup table, to be stored in
+//              the sigmoid registers.
 
 module sigmoid_ALU 
 (
@@ -1450,44 +1457,57 @@ module sigmoid_ALU
 	output wire [15:0] accum_out
 );
 
+// results of multiplication
 wire [7:0] mult1;
 wire [7:0] mult2;
 wire [7:0] mult3;
 wire [7:0] mult4;
 
+// storing result of sum of four weight-input products
 wire [9:0] added_nxt;
 reg  [9:0] added_reg;
 
+// weight inputs
 reg [3:0] weight1_reg;
 reg [3:0] weight2_reg;
 reg [3:0] weight3_reg;
 reg [3:0] weight4_reg;
 
+// input inputs
 reg [3:0] input1_reg;
 reg [3:0] input2_reg;
 reg [3:0] input3_reg;
 reg [3:0] input4_reg;
 
+// register for multiplication results
 reg [7:0] mult1_reg;
 reg [7:0] mult2_reg;
 reg [7:0] mult3_reg;
 reg [7:0] mult4_reg;
 
+// bias input
 reg [3:0] bias_reg;
+
+// next state for output
 wire [3:0] out_nxt;
 
 
+// multipliers
 sigmoid_ALU_multiplier M1 (.signval(weight1_reg), .unsignval(input1_reg), .out(mult1));
 sigmoid_ALU_multiplier M2 (.signval(weight2_reg), .unsignval(input2_reg), .out(mult2));
 sigmoid_ALU_multiplier M3 (.signval(weight3_reg), .unsignval(input3_reg), .out(mult3));
 sigmoid_ALU_multiplier M4 (.signval(weight4_reg), .unsignval(input4_reg), .out(mult4));
 
+// adder for multiplier ouputs
 sigmoid_ALU_4_way_adder ADDER (.in1(mult1_reg), .in2(mult2_reg), .in3(mult3_reg), .in4(mult4_reg), .out(added_nxt));
 
+// accumulator for sum of weighted inputs
 sigmoid_ALU_accumulator ACCUM (.clk(clk), .clear(clear), .accumulate(accumulate), .newval(added_reg), .out(accum_out));
 
+// sigmoid function lookup table
 sigmoid_ALU_sigmoid_calculator SIGM (.accum(accum_out[15:2]), .bias(bias_reg), .sigma(out_nxt));
 
+// all input registerred
 always_ff @ (posedge clk)
 begin
 	added_reg = added_nxt;
@@ -1723,7 +1743,12 @@ endmodule
 // Author:      Chan Weng Yan
 // Lab Section: 337-03
 // Version:     1.0  Initial Design Entry
-// Description: SPI input controller file
+// Description: SPI input controller 
+//              used to control the SPI input
+//              signals for the system, manages
+//              the opcodes that are sent
+//              and routes data to the correct 
+//              destinations
 
 module SPI_input_controller (
 	input wire clk,
@@ -1749,6 +1774,7 @@ module SPI_input_controller (
 	state_type state;
 	state_type next_state;
 		
+	// counter for keeping track of sent pixels
 	flex_counter #(7) spi_input_7bit_counter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(is_idle), 
@@ -1758,6 +1784,7 @@ module SPI_input_controller (
 		.rollover_flag(pixel_rollover) 
 	); 
 	
+	// counter for keeping track of when a byte was sent	
 	flex_counter #(4) spi_input_4bit_counter(
 		.clk(clk), .n_rst(n_rst), 
 		.clear(), 
@@ -1767,6 +1794,7 @@ module SPI_input_controller (
 		.rollover_flag(flag_long) 
 	); 
 	
+	// serial to parallel shift reigster for storing data sent via SPI
 	gen_stp_sr #(.NUM_BITS(8), .SHIFT_MSB(0)) spi_input_stpsr(
 		.clk(clk), .n_rst(n_rst), 
 		.shift_enable(sig_edge),
@@ -1774,6 +1802,7 @@ module SPI_input_controller (
 	.parallel_out(parallel_out)
 	);
 	
+	// synchronizers and edge detectors for SPI inputs	
 	gen_sync 	     spi_input_sync	(.clk(clk), .n_rst(n_rst), .async_in(async_in), .sync_out(sync_out));
 	gen_pos_edge_detect  spi_input_pos_edge	(.clk(clk), .n_rst(n_rst), .sig(sig), .sig_edge(sig_edge));
 
